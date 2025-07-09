@@ -180,12 +180,31 @@ npm test
 # PASS  src/__tests__/auth.test.ts
 # PASS  src/__tests__/customers.test.ts
 # PASS  src/__tests__/notes.test.ts
+# PASS  src/__tests__/components.test.tsx
 # 
-# Test Suites: 3 passed, 3 total
-# Tests:       15 passed, 15 total
+# Test Suites: 4 passed, 4 total
+# Tests:       16 passed, 16 total
 # Snapshots:   0 total
-# Time:        5.234 s
+# Time:        6.721 s
 ```
+
+### Frontend Testleri (React Testing Library)
+
+Proje React bileşenleri için de testler içerir:
+
+#### Test Dosyaları
+
+- **`src/__tests__/components.test.tsx`** - React bileşen testleri
+  - AuthProvider render testleri
+  - Component wrapper testleri
+  - Next.js router mock testleri
+
+#### Frontend Test Özellikleri
+
+- **React Testing Library**: Kullanıcı davranışlarını simüle eder
+- **Jest DOM**: DOM matchers (toBeInTheDocument, toHaveClass vb.)
+- **Next.js Router Mock**: useRouter ve usePathname fonksiyonları mocklanır
+- **JSX/TSX Desteği**: TypeScript React bileşenleri test edilir
 
 ### API Testleri (Postman)
 
@@ -259,7 +278,8 @@ mini-crm/
 │   └── __tests__/         # Test dosyaları
 │       ├── auth.test.ts   # Authentication testleri
 │       ├── customers.test.ts # Customer CRUD testleri
-│       └── notes.test.ts  # Note CRUD testleri
+│       ├── notes.test.ts  # Note CRUD testleri
+│       └── components.test.tsx # React bileşen testleri
 ├── public/                # Static assets
 ├── jest.config.js         # Jest yapılandırması
 ├── MiniCRM.postman_collection.json # Postman collection
