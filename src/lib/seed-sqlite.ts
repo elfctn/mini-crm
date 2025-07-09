@@ -5,6 +5,15 @@ export async function seedDatabase() {
   try {
     await initDatabase();
 
+    // veritabanını temizle ve yeniden oluştur (sadece productionda)
+    if (process.env.NODE_ENV === 'production') {
+      console.log('Production ortamında veritabanı yeniden oluşturuluyor...');
+      // tüm tabloları sil ve yeniden oluştur
+      await dbRun('DELETE FROM notes');
+      await dbRun('DELETE FROM customers');
+      await dbRun('DELETE FROM users');
+    }
+
     // test kullanıcısı var mı? kontrol et
     const existingUser = await dbGet('SELECT * FROM users WHERE email = ?', ['admin@minicrm.com']);
     
