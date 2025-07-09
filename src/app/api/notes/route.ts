@@ -6,13 +6,19 @@ import { authenticateUser, createErrorResponse } from '@/lib/auth';
 import { NoteInput } from '@/types';
 import mongoose from 'mongoose';
 
-// tüm notlar endpoint'i
+// tüm notlar veya müşteri bazlı notlar endpoint'i
 export async function GET(request: NextRequest) {
   try {
     await connectToDatabase();
     const user = await authenticateUser(request);
-    // kullanıcının tüm notlarını getir
-    const notes = await Note.find({ userId: user._id }).sort({ createdAt: -1 });
+    const { searchParams } = new URL(request.url);
+    const customerId = searchParams.get('customerId');
+    let filter: any = { userId: user._id };
+    if (customerId) {
+      filter.customerId = customerId;
+    }
+    // notları getir
+    const notes = await Note.find(filter).sort({ createdAt: -1 });
     // notları formatla
     const formattedNotes = notes.map((note: any) => ({
       _id: note._id.toString(),
