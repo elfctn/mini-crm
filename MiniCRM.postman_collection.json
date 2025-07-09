@@ -111,11 +111,11 @@
               { "key": "Authorization", "value": "Bearer {{token}}" }
             ],
             "url": {
-              "raw": "{{base_url}}/api/customers/1",
+              "raw": "{{base_url}}/api/customers/{{customerId}}",
               "host": ["{{base_url}}"],
-              "path": ["api", "customers", "1"]
+              "path": ["api", "customers", "{{customerId}}"]
             },
-            "description": "tek müşteri detayını getirir. jwt token gerektirir. id'yi güncel müşteri id'si ile değiştir."
+            "description": "tek müşteri detayını getirir ve notlarını da içerir. jwt token gerektirir. customerId'yi gerçek ObjectId ile değiştirin."
           }
         },
         {
@@ -151,11 +151,11 @@
               "raw": "{\n  \"name\": \"Ahmet Yılmaz\",\n  \"email\": \"ahmet@firma.com\",\n  \"phone\": \"+905551234567\",\n  \"tags\": [\"müşteri\"]\n}"
             },
             "url": {
-              "raw": "{{base_url}}/api/customers/1",
+              "raw": "{{base_url}}/api/customers/{{customerId}}",
               "host": ["{{base_url}}"],
-              "path": ["api", "customers", "1"]
+              "path": ["api", "customers", "{{customerId}}"]
             },
-            "description": "müşteri bilgilerini günceller. jwt token gerektirir. id'yi güncel müşteri id'si ile değiştir."
+            "description": "müşteri bilgilerini günceller. jwt token gerektirir. customerId'yi gerçek ObjectId ile değiştirin."
           }
         },
         {
@@ -166,11 +166,11 @@
               { "key": "Authorization", "value": "Bearer {{token}}" }
             ],
             "url": {
-              "raw": "{{base_url}}/api/customers/1",
+              "raw": "{{base_url}}/api/customers/{{customerId}}",
               "host": ["{{base_url}}"],
-              "path": ["api", "customers", "1"]
+              "path": ["api", "customers", "{{customerId}}"]
             },
-            "description": "müşteri siler. jwt token gerektirir. id'yi güncel müşteri id'si ile değiştir."
+            "description": "müşteri siler. jwt token gerektirir. customerId'yi gerçek ObjectId ile değiştirin."
           }
         }
       ]
@@ -179,21 +179,36 @@
       "name": "notes",
       "item": [
         {
-          "name": "not listele (list notes)",
+          "name": "tüm notları listele (list all notes)",
           "request": {
             "method": "GET",
             "header": [
               { "key": "Authorization", "value": "Bearer {{token}}" }
             ],
             "url": {
-              "raw": "{{base_url}}/api/notes?customerId=1",
+              "raw": "{{base_url}}/api/notes/all",
+              "host": ["{{base_url}}"],
+              "path": ["api", "notes", "all"]
+            },
+            "description": "kullanıcının tüm notlarını ve müşteri adlarını döner. jwt token gerektirir."
+          }
+        },
+        {
+          "name": "müşteri bazlı not listele (list notes by customer)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/notes?customerId={{customerId}}",
               "host": ["{{base_url}}"],
               "path": ["api", "notes"],
               "query": [
-                { "key": "customerId", "value": "1" }
+                { "key": "customerId", "value": "{{customerId}}" }
               ]
             },
-            "description": "müşterinin notlarını döner. jwt token gerektirir. customerId'yi güncel müşteri id'si ile değiştir."
+            "description": "belirli bir müşterinin notlarını döner. jwt token gerektirir. customerId'yi gerçek ObjectId ile değiştirin."
           }
         },
         {
@@ -206,14 +221,14 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"content\": \"ilk görüşme yapıldı\",\n  \"customerId\": \"1\"\n}"
+              "raw": "{\n  \"content\": \"ilk görüşme yapıldı\",\n  \"customerId\": \"{{customerId}}\"\n}"
             },
             "url": {
               "raw": "{{base_url}}/api/notes",
               "host": ["{{base_url}}"],
               "path": ["api", "notes"]
             },
-            "description": "müşteriye not ekler. jwt token gerektirir. customerId'yi güncel müşteri id'si ile değiştir."
+            "description": "müşteriye not ekler. jwt token gerektirir. customerId'yi gerçek ObjectId ile değiştirin."
           }
         },
         {
@@ -229,11 +244,11 @@
               "raw": "{\n  \"content\": \"görüşme olumlu geçti\"\n}"
             },
             "url": {
-              "raw": "{{base_url}}/api/notes/1",
+              "raw": "{{base_url}}/api/notes/{{noteId}}",
               "host": ["{{base_url}}"],
-              "path": ["api", "notes", "1"]
+              "path": ["api", "notes", "{{noteId}}"]
             },
-            "description": "notu günceller. jwt token gerektirir. id'yi güncel not id'si ile değiştir."
+            "description": "notu günceller. jwt token gerektirir. noteId'yi gerçek ObjectId ile değiştirin."
           }
         },
         {
@@ -244,11 +259,11 @@
               { "key": "Authorization", "value": "Bearer {{token}}" }
             ],
             "url": {
-              "raw": "{{base_url}}/api/notes/1",
+              "raw": "{{base_url}}/api/notes/{{noteId}}",
               "host": ["{{base_url}}"],
-              "path": ["api", "notes", "1"]
+              "path": ["api", "notes", "{{noteId}}"]
             },
-            "description": "notu siler. jwt token gerektirir. id'yi güncel not id'si ile değiştir."
+            "description": "notu siler. jwt token gerektirir. noteId'yi gerçek ObjectId ile değiştirin."
           }
         }
       ]
@@ -264,6 +279,16 @@
       "key": "token",
       "value": "",
       "description": "JWT token - login endpoint'inden alınan token"
+    },
+    {
+      "key": "customerId",
+      "value": "665b2e2f8b3c2a0012e4d1a7",
+      "description": "Gerçek bir müşteri ObjectId'si ile değiştirin."
+    },
+    {
+      "key": "noteId",
+      "value": "665b2e2f8b3c2a0012e4d1a8",
+      "description": "Gerçek bir not ObjectId'si ile değiştirin."
     }
   ]
 } 
