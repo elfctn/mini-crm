@@ -8,7 +8,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   logout: () => void;
-  checkAuth: () => boolean;
+  checkAuth: () => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,7 +22,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // public routes - authentication gerektirmeyen sayfalar
   const publicRoutes = ['/', '/login', '/register'];
 
-  const checkAuth = (): boolean => {
+  const checkAuth = async (): Promise<boolean> => {
     const token = localStorage.getItem('token');
     const userData = localStorage.getItem('user');
     
@@ -31,11 +31,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     try {
+      // token'ı decode et ve süresini kontrol et
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const currentTime = Date.now() / 1000;
+      
+      if (payload.exp < currentTime) {
+        // token süresi dolmuş
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        setUser(null);
+        return false;
+      }
+
       const parsedUser = JSON.parse(userData);
       setUser(parsedUser);
       return true;
     } catch (error) {
-      console.error('User data parse error:', error);
+      console.error('Auth check error:', error);
+      // hata durumunda temizle
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      setUser(null);
       return false;
     }
   };
@@ -48,19 +64,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   useEffect(() => {
-    const isPublicRoute = publicRoutes.includes(pathname);
-    const isAuthenticated = checkAuth();
+    const handleAuth = async () => {
+      const isPublicRoute = publicRoutes.includes(pathname);
+      const isAuthenticated = await checkAuth();
 
-    if (!isAuthenticated && !isPublicRoute) {
-      // kullanıcı giriş yapmamış ve public route değilse logine yönlendir
-      router.push('/login');
-    } else if (isAuthenticated && isPublicRoute && pathname !== '/') {
-      // kullanıcı giriş yapmış ve public routedaysa customersa yönlendir
-      router.push('/customers');
-    }
+      if (!isAuthenticated && !isPublicRoute) {
+        // kullanıcı giriş yapmamış ve public route değilse login'e yönlendir
+        router.push('/login');
+      } else if (isAuthenticated && isPublicRoute && pathname !== '/') {
+        // kullanıcı giriş yapmış ve public route'daysa customers'a yönlendir
+        router.push('/customers');
+      }
 
-    setLoading(false);
-  }, [pathname]);
+      setLoading(false);
+    };
+
+    handleAuth();
+  }, [pathname]); // router'ı dependency'den çıkardım
 
   const value = {
     user,

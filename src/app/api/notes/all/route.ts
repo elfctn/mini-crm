@@ -1,8 +1,9 @@
 import { NextRequest } from 'next/server';
-import { dbAll } from '@/lib/sqlite';
+import { dbGet, dbRun, dbAll, initDatabase } from '@/lib/sqlite';
 import { authenticateUser, createErrorResponse } from '@/lib/auth';
 
 // get - kullanıcının tüm notları
+    
 export async function GET(request: NextRequest) {
   try {
     const user = await authenticateUser(request);

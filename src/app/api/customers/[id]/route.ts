@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { dbGet, dbRun } from '@/lib/sqlite';
+import { dbGet, dbRun, dbAll, initDatabase } from '@/lib/sqlite';
 import { authenticateUser, createErrorResponse } from '@/lib/auth';
 import { CustomerInput } from '@/types';
 
@@ -7,6 +7,7 @@ import { CustomerInput } from '@/types';
 // ---tek müşteriyi getirme- güncelleme- silme
 
 // get - tek müşteri
+    
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -55,6 +56,7 @@ export async function GET(
 }
 
 // put - müşteri güncelleme
+    
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -129,6 +131,7 @@ export async function PUT(
 }
 
 // delete - müşteri silme
+    
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

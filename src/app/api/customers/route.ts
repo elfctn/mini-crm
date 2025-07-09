@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { dbAll, dbRun, dbGet } from '@/lib/sqlite';
+import { dbGet, dbRun, dbAll, initDatabase } from '@/lib/sqlite';
 import { authenticateUser, createErrorResponse } from '@/lib/auth';
 import { CustomerInput } from '@/types';
 
@@ -10,6 +10,8 @@ import { CustomerInput } from '@/types';
 // get - müşteri listesi
 export async function GET(request: NextRequest) {
   try {
+    // veritabanını başlat
+    
     // kullanıcıyı doğrula.
     const user = await authenticateUser(request);
 
@@ -75,6 +77,8 @@ export async function GET(request: NextRequest) {
 // post - yeni müşteri
 export async function POST(request: NextRequest) {
   try {
+    // veritabanını başlat
+    
     // kullanıcıyı doğrula.
     const user = await authenticateUser(request);
 

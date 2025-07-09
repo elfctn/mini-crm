@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Customer } from '@/types';
-import { ProtectedRoute } from '@/providers/ProtectedRoute';
 import { useAuth } from '@/providers/AuthProvider';
 
 export default function CustomersPage() {
@@ -49,19 +48,17 @@ export default function CustomersPage() {
   };
 
   return (
-    <ProtectedRoute>
-      <CustomersContent 
-        customers={customers}
-        loading={loading}
-        error={error}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        selectedTags={selectedTags}
-        setSelectedTags={setSelectedTags}
-        user={user}
-        handleLogout={handleLogout}
-      />
-    </ProtectedRoute>
+    <CustomersContent 
+      customers={customers}
+      loading={loading}
+      error={error}
+      searchTerm={searchTerm}
+      setSearchTerm={setSearchTerm}
+      selectedTags={selectedTags}
+      setSelectedTags={setSelectedTags}
+      user={user}
+      handleLogout={handleLogout}
+    />
   );
 }
 

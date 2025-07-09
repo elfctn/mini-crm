@@ -1,12 +1,14 @@
 import { NextRequest } from 'next/server';
 import bcrypt from 'bcryptjs';
-import { dbGet } from '@/lib/sqlite';
+import { dbGet, dbRun, dbAll, initDatabase } from '@/lib/sqlite';
 import { generateToken } from '@/lib/jwt';
 import { createAuthResponse, createErrorResponse } from '@/lib/auth';
 import { LoginForm } from '@/types';
 
 export async function POST(request: NextRequest) {
   try {
+    // veritabanını başlat
+    
     const body: LoginForm = await request.json();
     const { email, password } = body;
 

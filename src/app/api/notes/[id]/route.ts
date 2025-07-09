@@ -1,8 +1,9 @@
 import { NextRequest } from 'next/server';
-import { dbGet, dbRun } from '@/lib/sqlite';
+import { dbGet, dbRun, dbAll, initDatabase } from '@/lib/sqlite';
 import { authenticateUser, createErrorResponse } from '@/lib/auth';
 
 // put - not güncelleme
+    
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -63,6 +64,7 @@ export async function PUT(
 }
 
 // delete - not silme
+    
 export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

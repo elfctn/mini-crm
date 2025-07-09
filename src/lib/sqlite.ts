@@ -1,6 +1,7 @@
 import sqlite3 from 'sqlite3';
 import { open, Database } from 'sqlite';
 import { seedDatabase } from './seed-sqlite';
+import path from 'path';
 
 let db: Database | null = null;
 
@@ -10,8 +11,15 @@ export async function initDatabase() {
   }
 
   try {
+    // canlı ortamda dosya yolunu düzelt
+    const dbPath = process.env.NODE_ENV === 'production' 
+      ? path.join(process.cwd(), 'mini-crm.db')
+      : './mini-crm.db';
+
+    console.log('Veritabanı yolu:', dbPath);
+
     db = await open({
-      filename: './mini-crm.db',
+      filename: dbPath,
       driver: sqlite3.Database
     });
 
@@ -61,6 +69,7 @@ export async function initDatabase() {
       console.log('Seed işlemi zaten yapılmış veya hata oluştu:', error);
     }
 
+    console.log('Veritabanı başarıyla başlatıldı');
     return db;
   } catch (error) {
     console.error('Veritabanı başlatma hatası:', error);
@@ -76,18 +85,36 @@ export async function getDatabase() {
 }
 
 export async function dbRun(sql: string, params: any[] = []): Promise<any> {
-  const database = await getDatabase();
-  return database.run(sql, params);
+  try {
+    const database = await getDatabase();
+    if (!database) throw new Error('Database connection failed');
+    return database.run(sql, params);
+  } catch (error) {
+    console.error('Database run error:', error);
+    throw error;
+  }
 }
 
 export async function dbGet(sql: string, params: any[] = []): Promise<any> {
-  const database = await getDatabase();
-  return database.get(sql, params);
+  try {
+    const database = await getDatabase();
+    if (!database) throw new Error('Database connection failed');
+    return database.get(sql, params);
+  } catch (error) {
+    console.error('Database get error:', error);
+    throw error;
+  }
 }
 
 export async function dbAll(sql: string, params: any[] = []): Promise<any[]> {
-  const database = await getDatabase();
-  return database.all(sql, params);
+  try {
+    const database = await getDatabase();
+    if (!database) throw new Error('Database connection failed');
+    return database.all(sql, params);
+  } catch (error) {
+    console.error('Database all error:', error);
+    throw error;
+  }
 }
 
 export async function closeDatabase() {

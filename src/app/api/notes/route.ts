@@ -1,9 +1,10 @@
 import { NextRequest } from 'next/server';
-import { dbAll, dbRun, dbGet } from '@/lib/sqlite';
+import { dbGet, dbRun, dbAll, initDatabase } from '@/lib/sqlite';
 import { authenticateUser, createErrorResponse } from '@/lib/auth';
 import { NoteInput } from '@/types';
 
 // get - not listesi (müşteriye göre!!!!)
+    
 export async function GET(request: NextRequest) {
   try {
     const user = await authenticateUser(request);
@@ -52,6 +53,7 @@ export async function GET(request: NextRequest) {
 }
 
 // post - yeni not
+    
 export async function POST(request: NextRequest) {
   try {
     const user = await authenticateUser(request);

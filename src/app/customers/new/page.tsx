@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { CustomerInput } from '@/types';
-import { ProtectedRoute } from '@/providers/ProtectedRoute';
+
 
 export default function NewCustomerPage() {
   const router = useRouter();
@@ -78,8 +78,7 @@ export default function NewCustomerPage() {
   };
 
   return (
-    <ProtectedRoute>
-      <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
         {/* Header */}
         <header className="bg-white shadow">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -221,6 +220,5 @@ export default function NewCustomerPage() {
           </div>
         </main>
       </div>
-    </ProtectedRoute>
   );
 } 
