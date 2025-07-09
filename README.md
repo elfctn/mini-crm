@@ -126,12 +126,95 @@ Uygulama ilk çalıştırıldığında otomatik olarak demo hesap oluşturulur:
 
 ## 🧪 Test
 
-### API Testleri
+### Backend Testleri (Jest)
 
-Postman collection'ı kullanarak API'leri test edebilirsiniz:
-- `MiniCRM.postman_collection.json` dosyasını Postman'e import edin
-- Environment variables'ları ayarlayın
-- Test senaryolarını çalıştırın
+Proje kapsamlı backend testleri içerir. Testleri çalıştırmak için:
+
+```bash
+# tüm testleri çalıştır
+npm test
+
+# testleri watch modunda çalıştır
+npm run test:watch
+
+# test coverage raporu
+npm run test:coverage
+```
+
+#### Test Dosyaları
+
+- **`src/__tests__/auth.test.ts`** - Authentication endpoint testleri
+  - kullanıcı kaydı testleri
+  - kullanıcı girişi testleri
+  - jwt token doğrulama testleri
+  - hata durumları testleri
+
+- **`src/__tests__/customers.test.ts`** - Müşteri CRUD testleri
+  - müşteri ekleme testleri
+  - müşteri listeleme testleri
+  - müşteri güncelleme testleri
+  - müşteri silme testleri
+  - arama ve filtreleme testleri
+
+- **`src/__tests__/notes.test.ts`** - Not CRUD testleri
+  - not ekleme testleri
+  - not listeleme testleri
+  - not güncelleme testleri
+  - not silme testleri
+  - müşteri bazlı not testleri
+
+#### Test Özellikleri
+
+- **İzole Testler**: Her test MongoDB Memory Server kullanarak izole ortamda çalışır
+- **Açıklamalı Testler**: Her test küçük harfli, açıklayıcı yorumlarla başlar
+- **Kapsamlı Kapsam**: Tüm API endpointleri ve hata durumları test edilir
+- **Otomatik Temizlik**: Her test sonrası veritabanı otomatik temizlenir
+
+#### Test Çalıştırma Örneği
+
+```bash
+# tüm testleri çalıştır
+npm test
+
+# Çıktı örneği:
+# PASS  src/__tests__/auth.test.ts
+# PASS  src/__tests__/customers.test.ts
+# PASS  src/__tests__/notes.test.ts
+# 
+# Test Suites: 3 passed, 3 total
+# Tests:       15 passed, 15 total
+# Snapshots:   0 total
+# Time:        5.234 s
+```
+
+### API Testleri (Postman)
+
+Postman collection'ı kullanarak API'leri manuel olarak test edebilirsiniz:
+
+#### Kurulum
+
+1. **Postman Collection Import**
+   - `MiniCRM.postman_collection.json` dosyasını Postman'e import edin
+   - Collection'da tüm endpointler ve örnek veriler hazır
+
+2. **Environment Variables Ayarlayın**
+   ```
+   base_url: http://localhost:3000
+   token: (login endpoint'inden alınan JWT token)
+   customerId: (müşteri ekledikten sonra dönen ObjectId)
+   noteId: (not ekledikten sonra dönen ObjectId)
+   ```
+
+3. **Test Sırası**
+   - Önce `authentication/kullanıcı girişi` endpoint'ini çalıştırın
+   - Dönen token'ı environment variable'a kaydedin
+   - Diğer endpointleri test edin
+
+#### Endpoint Kategorileri
+
+- **Authentication**: Register, Login
+- **Customers**: CRUD işlemleri, Arama, Filtreleme
+- **Notes**: CRUD işlemleri, Müşteri bazlı listeleme
 
 ### Manuel Test Senaryoları
 
@@ -172,8 +255,14 @@ mini-crm/
 │   │   └── seed-mongodb.ts# MongoDB seed script
 │   ├── providers/         # React context providers
 │   │   └── AuthProvider.tsx
-│   └── types/             # TypeScript type definitions
+│   ├── types/             # TypeScript type definitions
+│   └── __tests__/         # Test dosyaları
+│       ├── auth.test.ts   # Authentication testleri
+│       ├── customers.test.ts # Customer CRUD testleri
+│       └── notes.test.ts  # Note CRUD testleri
 ├── public/                # Static assets
+├── jest.config.js         # Jest yapılandırması
+├── MiniCRM.postman_collection.json # Postman collection
 └── README.md
 ```
 
