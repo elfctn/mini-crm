@@ -73,10 +73,17 @@ npm run seed
 npm run dev
 ```
 
+**alternatif olarak sabit port kullanmak için:**
+```bash
+npm run dev -- -p 3000
+```
+
 6. **tarayıcıda açın**
 ```
 http://localhost:3000
 ```
+
+**not:** eğer port 3000 doluysa, next.js otomatik olarak 3001, 3002 gibi boş portları deneyecektir. terminal çıktısında hangi portta çalıştığını görebilirsiniz. sabit port kullanmak için `-p 3000` parametresini ekleyebilirsiniz.
 
 
 **> not: next.js 14 ile sadece next.config.js veya next.config.mjs dosyası desteklenir. next.config.ts kullanmayın.**
@@ -266,10 +273,17 @@ npm run seed
 npm run dev
 ```
 
+**alternatively, to use a fixed port:**
+```bash
+npm run dev -- -p 3000
+```
+
 6. **open in browser**
 ```
 http://localhost:3000
 ```
+
+**note:** if port 3000 is busy, next.js will automatically try ports 3001, 3002, etc. you can see which port it's running on in the terminal output. you can use `-p 3000` parameter to use a fixed port.
 
 **> note: with next.js 14, only next.config.js or next.config.mjs files are supported. do not use next.config.ts.**
 

@@ -258,7 +258,7 @@
     {
       "key": "base_url",
       "value": "http://localhost:3000",
-      "description": "API base URL - port numarasını güncelleyin"
+      "description": "API base URL - port numarasını güncelleyin (varsayılan: 3000)"
     },
     {
       "key": "token",
