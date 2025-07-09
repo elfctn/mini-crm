@@ -11,9 +11,12 @@ import { CustomerInput } from '@/types';
 export async function GET(request: NextRequest) {
   try {
     // veritabanını başlat
+    await initDatabase();
     
     // kullanıcıyı doğrula.
     const user = await authenticateUser(request);
+
+    console.log('Müşteri listesi isteniyor:', { userId: user._id });
 
     // urlden arama (search) ve etiketler (tags) parametrelerini al
     //  (tekrar kontrol edilecek burası)
@@ -46,8 +49,13 @@ export async function GET(request: NextRequest) {
     // müşterileri oluşturulma tarihine göre azalan sırada sırala.
     query += ' ORDER BY created_at DESC';
 
+    console.log('SQL sorgusu:', query);
+    console.log('Parametreler:', params);
+
     // veritabanından müşterileri getir.
     const customers: any = await dbAll(query, params);
+
+    console.log('Bulunan müşteri sayısı:', customers.length);
 
     // her müşterinin etiketlerini json string'inden parse ederek uygun formata dönüştür.
     const formattedCustomers = customers.map((customer: any) => ({
@@ -78,13 +86,18 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // veritabanını başlat
+    await initDatabase();
     
     // kullanıcıyı doğrula.
     const user = await authenticateUser(request);
 
+    console.log('Yeni müşteri ekleniyor:', { userId: user._id });
+
     // istek gövdesinden (body) yeni müşteri verilerini (isim, email, telefon, etiketler) al.
     const body: CustomerInput = await request.json();
     const { name, email, phone, tags } = body;
+
+    console.log('Müşteri verileri:', { name, email, phone, tags });
 
     // doğrulama: isim, e-posta ve telefon alanlarının boş olup olmadığını kontrol et.
     if (!name || !email || !phone) {
@@ -107,6 +120,8 @@ export async function POST(request: NextRequest) {
       'INSERT INTO customers (name, email, phone, tags, user_id) VALUES (?, ?, ?, ?, ?)',
       [name, email, phone, JSON.stringify(tags || []), user._id]
     );
+
+    console.log('Müşteri eklendi:', { id: result.lastID, name, email });
 
     // oluşturulan yeni müşteri verilerini api yanıtı için biçimlendiriyorum 
     const newCustomer = {

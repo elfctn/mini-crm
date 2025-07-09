@@ -1,370 +1,267 @@
 # Mini CRM - Müşteri Takip Uygulaması
 
-🎯 **proje amacı**
+Küçük işletmeler için basit ve etkili müşteri takip sistemi. Next.js 14, SQLite, JWT authentication ve TailwindCSS ile geliştirilmiştir.
 
-küçük işletmelerin potansiyel müşteri (lead) bilgilerini kaydedebileceği, takip edebileceği ve not alabileceği basit bir crm sistemi. bu sistemde kullanıcılar müşteri ekleyebilir, güncelleyebilir, silebilir ve listeleyebilir.
+## 🚀 Özellikler
 
-🛠️ **kullanılan teknolojiler**
+- **Kullanıcı Yönetimi**: JWT tabanlı güvenli authentication
+- **Müşteri Yönetimi**: Tam CRUD operasyonları (Ekleme, Okuma, Güncelleme, Silme)
+- **Not Sistemi**: Müşteriler için not ekleme ve yönetimi
+- **Arama ve Filtreleme**: Müşteri arama ve etiket bazlı filtreleme
+- **Responsive Tasarım**: Mobil uyumlu modern arayüz
+- **Canlı Ortam Desteği**: Production-ready yapılandırma
 
-- **frontend & backend**: next.js 14 (app router, server components, api routes)
-- **veritabanı**: sqlite3 (file-based, no setup required)
-- **authentication**: jwt (json web tokens)
-- **styling**: tailwindcss v4
-- **language**: typescript
+## 🛠️ Teknolojiler
 
-📦 **özellikler**
+- **Frontend**: Next.js 14, React 18, TypeScript
+- **Styling**: TailwindCSS
+- **Backend**: Next.js API Routes
+- **Veritabanı**: SQLite
+- **Authentication**: JWT (JSON Web Tokens)
+- **Password Hashing**: bcryptjs
+- **Deployment**: Vercel (önerilen)
 
-### 🔐 1. giriş & çıkış sistemi
-- basit e-posta/şifre ile kullanıcı kaydı ve girişi
-- jwt token ile kullanıcı doğrulama
-- güvenli şifre hashleme (bcryptjs)
-- **otomatik route protection** - giriş yapmamış kullanıcılar korumalı sayfalara erişemez
-- **otomatik yönlendirme** - giriş yapmış kullanıcılar ana sayfa/login/register sayfalarından customers sayfasına yönlendirilir
-- **optimized token validation** - client-side token süre kontrolü ile gereksiz API çağrıları önlendi
+## 📋 Gereksinimler
 
-### 👥 2. müşteri işlemleri (crud)
-- yeni müşteri ekleme (ad, e-posta, telefon, etiket)
-- müşteri listesini görüntüleme
-- müşteri bilgilerini güncelleme
-- müşteri silme
+- Node.js 18+ 
+- npm veya yarn
 
-### 📝 3. not ekleme
-- her müşteri kartına özel notlar ekleyebilme (tarih + açıklama)
-- notları güncelleme ve silme
-- tüm notları tek sayfada yönetme
+## 🚀 Kurulum
 
-### 🔍 4. arama ve filtreleme
-- isim veya etiketle arama
-- etikete göre filtreleme
+### 1. Projeyi Klonlayın
 
-### 🛡️ 5. authentication middleware
-- **AuthProvider**: tüm uygulamada authentication durumunu yönetir
-- **useAuth hook**: authentication durumuna erişim sağlar
-- **otomatik token kontrolü**: client-side token süre kontrolü ile performans optimizasyonu
-- **canlı ortam optimizasyonu**: gereksiz API çağrıları kaldırıldı
-
-## 🚀 kurulum
-
-### gereksinimler
-- node.js 18+
-- sqlite3 (otomatik olarak yüklenir)
-
-### adımlar
-
-1. **projeyi klonlayın**
 ```bash
 git clone <repository-url>
 cd mini-crm
 ```
 
-2. **bağımlılıkları yükleyin**
+### 2. Bağımlılıkları Yükleyin
+
 ```bash
 npm install
 ```
 
-3. **environment değişkenlerini ayarlayın**
+### 3. Environment Variables Ayarlayın
+
+`.env.local` dosyası oluşturun:
+
 ```bash
 cp env.example .env.local
 ```
 
 `.env.local` dosyasını düzenleyin:
+
 ```env
-JWT_SECRET=your-super-secret-jwt-key-here
-NEXTAUTH_SECRET=your-nextauth-secret
+# jwt secret - canlı ortamda mutlaka değiştirin!
+JWT_SECRET=your-super-secret-jwt-key-here-change-this-in-production
+
+# nextauth secret (opsiyonel)
+NEXTAUTH_SECRET=your-nextauth-secret-key
+
+# veritabanı ayarları (opsiyonel)
+DATABASE_URL=./mini-crm.db
+
+# canlı ortam ayarları
+NODE_ENV=production
 ```
 
-4. **veritabanını seed edin (opsiyonel)**
-```bash
-npm run seed
-```
+### 4. Geliştirme Sunucusunu Başlatın
 
-5. **development server'ı başlatın**
 ```bash
 npm run dev
 ```
 
-**alternatif olarak sabit port kullanmak için:**
-```bash
-npm run dev -- -p 3000
+Uygulama [http://localhost:3000](http://localhost:3000) adresinde çalışacaktır.
+
+## 🔐 Demo Hesap
+
+Uygulama ilk çalıştırıldığında otomatik olarak demo hesap oluşturulur:
+
+- **Email**: `admin@minicrm.com`
+- **Şifre**: `admin123`
+
+## 📱 Kullanım
+
+### Giriş Yapma
+1. `/login` sayfasına gidin
+2. Demo hesap bilgileriyle giriş yapın
+3. Başarılı girişten sonra müşteri listesine yönlendirilirsiniz
+
+### Müşteri Yönetimi
+- **Müşteri Ekleme**: "Yeni Müşteri" butonuna tıklayın
+- **Müşteri Düzenleme**: Müşteri kartındaki "Düzenle" butonuna tıklayın
+- **Müşteri Silme**: Müşteri detay sayfasındaki "Sil" butonuna tıklayın
+- **Arama**: Üst kısımdaki arama kutusunu kullanın
+- **Filtreleme**: Etiketlere göre filtreleme yapın
+
+### Not Yönetimi
+- **Not Ekleme**: Müşteri detay sayfasında not ekleyin
+- **Not Düzenleme**: Not üzerindeki "Düzenle" butonuna tıklayın
+- **Not Silme**: Not üzerindeki "Sil" butonuna tıklayın
+
+## 🌐 Canlı Ortam (Production) Kurulumu
+
+### Vercel ile Deploy
+
+1. **Vercel'e Bağlanın**
+   ```bash
+   npm install -g vercel
+   vercel login
+   ```
+
+2. **Environment Variables Ayarlayın**
+   - Vercel dashboard'da projenizi seçin
+   - Settings > Environment Variables bölümüne gidin
+   - Aşağıdaki değişkenleri ekleyin:
+     ```
+     JWT_SECRET=your-production-jwt-secret-key
+     NODE_ENV=production
+     ```
+
+3. **Deploy Edin**
+   ```bash
+   vercel --prod
+   ```
+
+### Canlı Ortam Sorunları ve Çözümleri
+
+#### ✅ Çözülen Sorunlar:
+- **Veritabanı Başlatma**: Tüm API route'larda otomatik veritabanı başlatma
+- **JWT Secret**: Fallback değerler ve güvenli token yönetimi
+- **Authentication Flow**: Geliştirilmiş token kontrolü ve redirect'ler
+- **Error Handling**: Detaylı hata yönetimi ve loglama
+- **Database Path**: Canlı ortam için doğru dosya yolu ayarları
+
+#### 🔧 Teknik İyileştirmeler:
+- Her API çağrısında veritabanı bağlantısı kontrolü
+- JWT token süre kontrolü (client-side)
+- Geliştirilmiş error logging
+- Production-ready database initialization
+- Secure fallback JWT secrets
+
+## 🧪 Test
+
+### API Testleri
+
+Postman collection'ı kullanarak API'leri test edebilirsiniz:
+- `MiniCRM.postman_collection.json` dosyasını Postman'e import edin
+- Environment variables'ları ayarlayın
+- Test senaryolarını çalıştırın
+
+### Manuel Test Senaryoları
+
+1. **Authentication Test**
+   - Login/Register işlemleri
+   - Token expiration kontrolü
+   - Protected route access
+
+2. **CRUD Testleri**
+   - Müşteri ekleme/düzenleme/silme
+   - Not ekleme/düzenleme/silme
+   - Arama ve filtreleme
+
+3. **Canlı Ortam Testleri**
+   - Production deployment kontrolü
+   - Database persistence
+   - Environment variable kontrolü
+
+## 📁 Proje Yapısı
+
+```
+mini-crm/
+├── src/
+│   ├── app/
+│   │   ├── api/           # API routes
+│   │   │   ├── auth/      # Authentication endpoints
+│   │   │   ├── customers/ # Customer CRUD endpoints
+│   │   │   └── notes/     # Note CRUD endpoints
+│   │   ├── customers/     # Customer pages
+│   │   ├── notes/         # Notes page
+│   │   ├── login/         # Login page
+│   │   └── register/      # Register page
+│   ├── lib/               # Utility functions
+│   │   ├── auth.ts        # Authentication helpers
+│   │   ├── jwt.ts         # JWT utilities
+│   │   ├── sqlite.ts      # Database connection
+│   │   └── seed-sqlite.ts # Database seeding
+│   ├── providers/         # React context providers
+│   │   └── AuthProvider.tsx
+│   └── types/             # TypeScript type definitions
+├── public/                # Static assets
+├── mini-crm.db           # SQLite database
+└── README.md
 ```
 
-6. **tarayıcıda açın**
-```
-http://localhost:3000
-```
+## 🔧 Geliştirme
 
-## 🔧 api endpoints
+### Yeni Özellik Ekleme
 
-### authentication
-- `post /api/auth/register` - kullanıcı kaydı
-- `post /api/auth/login` - kullanıcı girişi
+1. **API Route Oluşturma**
+   ```typescript
+   // src/app/api/feature/route.ts
+   export async function GET(request: NextRequest) {
+     await initDatabase();
+     const user = await authenticateUser(request);
+     // ... implementation
+   }
+   ```
 
-### customers
-- `get /api/customers` - müşteri listesi
-- `post /api/customers` - yeni müşteri
-- `put /api/customers/[id]` - müşteri güncelleme
-- `delete /api/customers/[id]` - müşteri silme
+2. **Frontend Sayfası Oluşturma**
+   ```typescript
+   // src/app/feature/page.tsx
+   'use client';
+   import { useAuth } from '@/providers/AuthProvider';
+   // ... implementation
+   ```
 
-### notes
-- `get /api/notes?customerId=[id]` - müşteri notları
-- `post /api/notes` - yeni not
-- `put /api/notes/[id]` - not güncelleme
-- `delete /api/notes/[id]` - not silme
-- `get /api/notes/all` - tüm notlar (müşteri adlarıyla)
+### Database Schema Değişiklikleri
 
-## 🎯 teknik özellikler
+1. `src/lib/sqlite.ts` dosyasında tablo yapısını güncelleyin
+2. Migration script'i yazın (gerekirse)
+3. Seed data'yı güncelleyin
 
-### next.js 14 app router
-- server components ile performans optimizasyonu
-- api routes ile backend entegrasyonu
+## 🐛 Sorun Giderme
 
-### sqlite3 entegrasyonu
-- file-based database (kurulum gerektirmez)
-- acid compliance
-- otomatik backup ve restore
-- **canlı ortam optimizasyonu**: production dosya yolu düzeltmesi
+### Yaygın Sorunlar
 
-### jwt authentication
-- stateless authentication
-- secure token management
-- middleware ile route protection
-- **client-side token validation**: gereksiz API çağrıları önlendi
+1. **"Database connection failed" Hatası**
+   - Veritabanı dosyasının yazma izinlerini kontrol edin
+   - `mini-crm.db` dosyasının varlığını kontrol edin
 
-### typescript
-- type safety
-- better developer experience
-- intellisense support
+2. **"Authentication failed" Hatası**
+   - JWT_SECRET environment variable'ını kontrol edin
+   - Token'ın geçerliliğini kontrol edin
 
-### authentication middleware
-- **AuthProvider**: context-based authentication state management
-- **useAuth hook**: authentication utilities
-- **automatic redirects**: smart navigation based on auth state
-- **performance optimization**: client-side token validation
+3. **"Cannot read property of null" Hatası**
+   - localStorage erişimini kontrol edin
+   - Client-side rendering sorunlarını kontrol edin
 
-## 🛡️ güvenlik özellikleri
+### Debug Modu
 
-### route protection
-- korumalı sayfalar: `/customers`, `/customers/new`, `/customers/[id]`, `/notes`
-- public sayfalar: `/`, `/login`, `/register`
-- otomatik yönlendirme: giriş yapmış kullanıcılar public sayfalardan customers'a yönlendirilir
-- otomatik login kontrolü: giriş yapmamış kullanıcılar korumalı sayfalardan login'e yönlendirilir
+Geliştirme sırasında console loglarını aktif tutun:
+- API route'larda detaylı logging
+- AuthProvider'da token kontrol logları
+- Database işlemlerinde debug bilgileri
 
-### token management
-- localStorage'da güvenli token saklama
-- client-side token süre kontrolü
-- otomatik logout: süresi dolmuş token durumunda kullanıcı çıkış yapar
+## 📄 Lisans
 
-## 🔧 canlı ortam düzeltmeleri
+Bu proje MIT lisansı altında lisanslanmıştır.
 
-### authentication optimizasyonu
-- **AuthProvider**: gereksiz API çağrıları kaldırıldı
-- **token validation**: client-side JWT decode ile süre kontrolü
-- **performance**: router dependency'den çıkarıldı
+## 🤝 Katkıda Bulunma
 
-### veritabanı iyileştirmeleri
-- **production path**: canlı ortamda doğru dosya yolu
-- **auto-init**: her API çağrısında otomatik veritabanı başlatma
-- **error handling**: gelişmiş hata yönetimi
+1. Fork yapın
+2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
+3. Commit yapın (`git commit -m 'feat: add amazing feature'`)
+4. Push yapın (`git push origin feature/amazing-feature`)
+5. Pull Request oluşturun
 
-### kod temizliği
-- **ProtectedRoute**: gereksiz wrapper component kaldırıldı
-- **import optimization**: gereksiz import'lar temizlendi
-- **build optimization**: production build sorunları çözüldü
+## 📞 İletişim
 
-## 🤝 katkıda bulunma
-
-1. fork edin
-2. feature branch oluşturun (`git checkout -b feature/amazing-feature`)
-3. commit edin (`git commit -m 'add amazing feature'`)
-4. push edin (`git push origin feature/amazing-feature`)
-5. pull request oluşturun
-
-## 📄 Proje Sahibi
-ELIF CETIN
+Proje ile ilgili sorularınız için:
+- GitHub Issues kullanın
+- Email: [your-email@example.com]
 
 ---
 
-# Mini CRM - Customer Management Application
-
-🎯 **project purpose**
-
-a simple crm system for small businesses to record, track, and take notes on potential customer (lead) information. in this system, users can add, update, delete, and list customers.
-
-🛠️ **technologies used**
-
-- **frontend & backend**: next.js 14 (app router, server components, api routes)
-- **database**: sqlite3 (file-based, no setup required)
-- **authentication**: jwt (json web tokens)
-- **styling**: tailwindcss v4
-- **language**: typescript
-
-📦 **features**
-
-### 🔐 1. login & logout system
-- simple email/password user registration and login
-- jwt token user authentication
-- secure password hashing (bcryptjs)
-- **automatic route protection** - unauthenticated users cannot access protected pages
-- **automatic redirects** - authenticated users are redirected from public pages to customers page
-- **optimized token validation** - client-side token expiration check prevents unnecessary API calls
-
-### 👥 2. customer operations (crud)
-- add new customers (name, email, phone, tags)
-- view customer list
-- update customer information
-- delete customers
-
-### 📝 3. note taking
-- add special notes to each customer card (date + description)
-- update and delete notes
-- manage all notes on a single page
-
-### 🔍 4. search and filtering
-- search by name or tags
-- filter by tags
-
-### 🛡️ 5. authentication middleware
-- **AuthProvider**: manages authentication state across the entire application
-- **useAuth hook**: provides access to authentication state
-- **automatic token validation**: client-side token expiration check for performance optimization
-- **production optimization**: unnecessary API calls removed
-
-## 🚀 installation
-
-### requirements
-- node.js 18+
-- sqlite3 (automatically installed)
-
-### steps
-
-1. **clone the project**
-```bash
-git clone <repository-url>
-cd mini-crm
-```
-
-2. **install dependencies**
-```bash
-npm install
-```
-
-3. **set up environment variables**
-```bash
-cp env.example .env.local
-```
-
-edit `.env.local` file:
-```env
-JWT_SECRET=your-super-secret-jwt-key-here
-NEXTAUTH_SECRET=your-nextauth-secret
-```
-
-4. **seed the database (optional)**
-```bash
-npm run seed
-```
-
-5. **start development server**
-```bash
-npm run dev
-```
-
-**alternative with fixed port:**
-```bash
-npm run dev -- -p 3000
-```
-
-6. **open in browser**
-```
-http://localhost:3000
-```
-
-## 🔧 api endpoints
-
-### authentication
-- `post /api/auth/register` - user registration
-- `post /api/auth/login` - user login
-
-### customers
-- `get /api/customers` - customer list
-- `post /api/customers` - new customer
-- `put /api/customers/[id]` - update customer
-- `delete /api/customers/[id]` - delete customer
-
-### notes
-- `get /api/notes?customerId=[id]` - customer notes
-- `post /api/notes` - new note
-- `put /api/notes/[id]` - update note
-- `delete /api/notes/[id]` - delete note
-- `get /api/notes/all` - all notes (with customer names)
-
-## 🎯 technical features
-
-### next.js 14 app router
-- performance optimization with server components
-- backend integration with api routes
-
-### sqlite3 integration
-- file-based database (no setup required)
-- acid compliance
-- automatic backup and restore
-- **production optimization**: production file path fix
-
-### jwt authentication
-- stateless authentication
-- secure token management
-- route protection with middleware
-- **client-side token validation**: prevents unnecessary API calls
-
-### typescript
-- type safety
-- better developer experience
-- intellisense support
-
-### authentication middleware
-- **AuthProvider**: context-based authentication state management
-- **useAuth hook**: authentication utilities
-- **automatic redirects**: smart navigation based on auth state
-- **performance optimization**: client-side token validation
-
-## 🛡️ security features
-
-### route protection
-- protected pages: `/customers`, `/customers/new`, `/customers/[id]`, `/notes`
-- public pages: `/`, `/login`, `/register`
-- automatic redirects: authenticated users are redirected from public pages to customers
-- automatic login check: unauthenticated users are redirected from protected pages to login
-
-### token management
-- secure token storage in localStorage
-- client-side token expiration checking
-- automatic logout: user is logged out when token expires
-
-## 🔧 production fixes
-
-### authentication optimization
-- **AuthProvider**: removed unnecessary API calls
-- **token validation**: client-side JWT decode for expiration check
-- **performance**: removed router from dependencies
-
-### database improvements
-- **production path**: correct file path in production environment
-- **auto-init**: automatic database initialization on each API call
-- **error handling**: enhanced error management
-
-### code cleanup
-- **ProtectedRoute**: removed unnecessary wrapper component
-- **import optimization**: cleaned up unnecessary imports
-- **build optimization**: fixed production build issues
-
-## 🤝 contributing
-
-1. fork the project
-2. create feature branch (`git checkout -b feature/amazing-feature`)
-3. commit changes (`git commit -m 'add amazing feature'`)
-4. push to branch (`git push origin feature/amazing-feature`)
-5. create pull request
-
-## 📄 Project Owner
-ELIF CETIN
+**Not**: Bu proje eğitim amaçlı geliştirilmiştir. Production kullanımı için güvenlik önlemlerini artırmanız önerilir.
 

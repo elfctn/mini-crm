@@ -2,6 +2,7 @@ import sqlite3 from 'sqlite3';
 import { open, Database } from 'sqlite';
 import { seedDatabase } from './seed-sqlite';
 import path from 'path';
+import fs from 'fs';
 
 let db: Database | null = null;
 
@@ -14,9 +15,15 @@ export async function initDatabase() {
     // canlı ortamda dosya yolunu düzelt
     const dbPath = process.env.NODE_ENV === 'production' 
       ? path.join(process.cwd(), 'mini-crm.db')
-      : './mini-crm.db';
+      : path.join(process.cwd(), 'mini-crm.db');
 
     console.log('Veritabanı yolu:', dbPath);
+    console.log('Çalışma dizini:', process.cwd());
+    console.log('NODE_ENV:', process.env.NODE_ENV);
+
+    // veritabanı dosyasının var olup olmadığını kontrol et
+    const dbExists = fs.existsSync(dbPath);
+    console.log('Veritabanı dosyası mevcut:', dbExists);
 
     db = await open({
       filename: dbPath,

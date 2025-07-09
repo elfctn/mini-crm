@@ -1,90 +1,110 @@
 import { NextRequest } from 'next/server';
 import { dbGet, dbRun, dbAll, initDatabase } from '@/lib/sqlite';
 import { authenticateUser, createErrorResponse } from '@/lib/auth';
+import { NoteInput } from '@/types';
 
 // put - not güncelleme
-    
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
+    // veritabanını başlat
+    await initDatabase();
+    
+    // kullanıcıyı doğrula
     const user = await authenticateUser(request);
-    const { id } = await params;
+    const noteId = params.id;
 
-    const body = await request.json();
+    console.log('Not güncelleniyor:', { userId: user._id, noteId });
+
+    const body: NoteInput = await request.json();
     const { content } = body;
+
+    console.log('Güncelleme verileri:', { content });
 
     // doğrulama
     if (!content) {
       return createErrorResponse('İçerik gereklidir', 400);
     }
 
-    if (content.trim().length === 0) {
-      return createErrorResponse('Not içeriği boş olamaz', 400);
-    }
-
-    // notun var olup olmadığını ve kullanıcıya ait olup olmadığını kontrol ediyorum
+    // notun var olup olmadığını kontrol et
     const existingNote: any = await dbGet(
       'SELECT * FROM notes WHERE id = ? AND user_id = ?',
-      [id, user._id]
+      [noteId, user._id]
     );
 
     if (!existingNote) {
       return createErrorResponse('Not bulunamadı', 404);
     }
 
-    // notu güncelliyorum
+    // notu güncelle
     await dbRun(
-      'UPDATE notes SET content = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?',
-      [content.trim(), id]
+      'UPDATE notes SET content = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND user_id = ?',
+      [content, noteId, user._id]
     );
 
-    //frontende gönderilecek veri
-    const now = new Date();
-    const updatedNote = {
-      _id: id,
-      content: content.trim(),
-      customerId: existingNote.customer_id.toString(),
-      userId: user._id,
-      createdAt: existingNote.created_at,
-      updatedAt: now.toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul' })
+    console.log('Not güncellendi:', { noteId });
+
+    // güncellenmiş notu getir
+    const updatedNote: any = await dbGet(
+      'SELECT * FROM notes WHERE id = ? AND user_id = ?',
+      [noteId, user._id]
+    );
+
+    const formattedNote = {
+      _id: updatedNote.id.toString(),
+      content: updatedNote.content,
+      customerId: updatedNote.customer_id.toString(),
+      userId: updatedNote.user_id.toString(),
+      createdAt: updatedNote.created_at,
+      updatedAt: updatedNote.updated_at
     };
 
     return Response.json({
       success: true,
-      data: updatedNote,
+      data: formattedNote,
       message: 'Not başarıyla güncellendi'
     });
 
   } catch (error) {
-    console.error('Update note error:', error);
+    console.error('update note error:', error);
     return createErrorResponse('Not güncellenemedi', 500);
   }
 }
 
 // delete - not silme
-    
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: { id: string } }
 ) {
   try {
+    // veritabanını başlat
+    await initDatabase();
+    
+    // kullanıcıyı doğrula
     const user = await authenticateUser(request);
-    const { id } = await params;
+    const noteId = params.id;
 
-    // notun var olup olmadığını ve kullanıcıya ait olup olmadığını kontrol ediyorum
-    const note: any = await dbGet(
+    console.log('Not siliniyor:', { userId: user._id, noteId });
+
+    // notun var olup olmadığını kontrol et
+    const existingNote: any = await dbGet(
       'SELECT * FROM notes WHERE id = ? AND user_id = ?',
-      [id, user._id]
+      [noteId, user._id]
     );
 
-    if (!note) {
+    if (!existingNote) {
       return createErrorResponse('Not bulunamadı', 404);
     }
 
-    // notu siliyorum     
-    await dbRun('DELETE FROM notes WHERE id = ?', [id]);
+    // notu sil
+    await dbRun(
+      'DELETE FROM notes WHERE id = ? AND user_id = ?',
+      [noteId, user._id]
+    );
+
+    console.log('Not silindi:', { noteId });
 
     return Response.json({
       success: true,
@@ -92,7 +112,7 @@ export async function DELETE(
     });
 
   } catch (error) {
-    console.error('Delete note error:', error);
+    console.error('delete note error:', error);
     return createErrorResponse('Not silinemedi', 500);
   }
 } 
