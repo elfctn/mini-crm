@@ -1,59 +1,58 @@
 # Mini CRM - Müşteri Takip Uygulaması
 
-🎯 **Proje Amacı**
+🎯 **proje amacı**
 
-Küçük işletmelerin potansiyel müşteri (lead) bilgilerini kaydedebileceği, takip edebileceği ve not alabileceği basit bir CRM sistemi. Bu sistemde kullanıcılar müşteri ekleyebilir, güncelleyebilir, silebilir ve listeleyebilir.
+küçük işletmelerin potansiyel müşteri (lead) bilgilerini kaydedebileceği, takip edebileceği ve not alabileceği basit bir crm sistemi. bu sistemde kullanıcılar müşteri ekleyebilir, güncelleyebilir, silebilir ve listeleyebilir.
 
-🛠️ **Kullanılan Teknolojiler**
+🛠️ **kullanılan teknolojiler**
 
-- **Frontend & Backend**: Next.js 15 (App Router, Server Components, API Routes)
-- **Veritabanı**: SQLite3 (File-based, no setup required)
-- **Authentication**: JWT (JSON Web Tokens)
-- **Styling**: TailwindCSS v4
-- **Language**: TypeScript
-- **Development**: Turbopack for faster builds
+- **frontend & backend**: next.js 14 (app router, server components, api routes)
+- **veritabanı**: sqlite3 (file-based, no setup required)
+- **authentication**: jwt (json web tokens)
+- **styling**: tailwindcss v4
+- **language**: typescript
 
-📦 **Özellikler**
+📦 **özellikler**
 
-### 🔐 1. Giriş & Çıkış Sistemi
-- Basit e-posta/şifre ile kullanıcı kaydı ve girişi
-- JWT token ile kullanıcı doğrulama
-- Güvenli şifre hashleme (bcryptjs)
+### 🔐 1. giriş & çıkış sistemi
+- basit e-posta/şifre ile kullanıcı kaydı ve girişi
+- jwt token ile kullanıcı doğrulama
+- güvenli şifre hashleme (bcryptjs)
 
-### 👥 2. Müşteri İşlemleri (CRUD)
-- Yeni müşteri ekleme (ad, e-posta, telefon, etiket)
-- Müşteri listesini görüntüleme
-- Müşteri bilgilerini güncelleme
-- Müşteri silme
+### 👥 2. müşteri işlemleri (crud)
+- yeni müşteri ekleme (ad, e-posta, telefon, etiket)
+- müşteri listesini görüntüleme
+- müşteri bilgilerini güncelleme
+- müşteri silme
 
-### 📝 3. Not Ekleme
-- Her müşteri kartına özel notlar ekleyebilme (tarih + açıklama)
-- Notları güncelleme ve silme
+### 📝 3. not ekleme
+- her müşteri kartına özel notlar ekleyebilme (tarih + açıklama)
+- notları güncelleme ve silme
 
-### 🔍 4. Arama ve Filtreleme
-- İsim veya etiketle arama
-- Etikete göre filtreleme
+### 🔍 4. arama ve filtreleme
+- isim veya etiketle arama
+- etikete göre filtreleme
 
-## 🚀 Kurulum
+## 🚀 kurulum
 
-### Gereksinimler
-- Node.js 18+ 
-- SQLite3 (otomatik olarak yüklenir)
+### gereksinimler
+- node.js 18+
+- sqlite3 (otomatik olarak yüklenir)
 
-### Adımlar
+### adımlar
 
-1. **Projeyi klonlayın**
+1. **projeyi klonlayın**
 ```bash
 git clone <repository-url>
 cd mini-crm
 ```
 
-2. **Bağımlılıkları yükleyin**
+2. **bağımlılıkları yükleyin**
 ```bash
 npm install
 ```
 
-3. **Environment değişkenlerini ayarlayın**
+3. **environment değişkenlerini ayarlayın**
 ```bash
 cp env.example .env.local
 ```
@@ -64,29 +63,31 @@ JWT_SECRET=your-super-secret-jwt-key-here
 NEXTAUTH_SECRET=your-nextauth-secret
 ```
 
-4. **Veritabanını seed edin (opsiyonel)**
+4. **veritabanını seed edin (opsiyonel)**
 ```bash
 npm run seed
 ```
 
-5. **Development server'ı başlatın**
+5. **development server'ı başlatın**
 ```bash
 npm run dev
 ```
 
-6. **Tarayıcıda açın**
+6. **tarayıcıda açın**
 ```
 http://localhost:3000
 ```
 
-## 👤 Test Kullanıcısı
+> not: next.js 14 ile sadece next.config.js veya next.config.mjs dosyası desteklenir. next.config.ts kullanmayın.
 
-Uygulama ilk çalıştırıldığında otomatik olarak bir test kullanıcısı oluşturulur:
+## 👤 test kullanıcısı
 
-- **Email**: admin@minicrm.com
-- **Şifre**: admin123
+uygulama ilk çalıştırıldığında otomatik olarak bir test kullanıcısı oluşturulur:
 
-## 📁 Proje Yapısı
+- **email**: admin@minicrm.com
+- **şifre**: admin123
+
+## 📁 proje yapısı
 
 ```
 mini-crm/
@@ -101,15 +102,13 @@ mini-crm/
 │   │   ├── customers/
 │   │   ├── login/
 │   │   └── register/
-│   ├── components/
 │   ├── lib/
 │   │   ├── sqlite.ts
 │   │   ├── auth.ts
 │   │   └── seed-sqlite.ts
 │   ├── types/
-│   └── hooks/
 ├── public/
-├── mini-crm.db (SQLite database)
+├── mini-crm.db (sqlite database)
 └── package.json
 ```
 
@@ -125,73 +124,72 @@ tüm api endpointlerini test etmek için postman koleksiyonu kullanabilirsin.
 
 her isteğin açıklaması ve örnek body'leri koleksiyonda mevcut
 
-## 🚀 Deployment
+## 🚀 deployment
 
-### Vercel (Önerilen)
-1. Vercel hesabı oluşturun
-2. GitHub repository'nizi bağlayın
-3. Environment variables'ları ayarlayın
-4. Deploy edin
+### vercel (önerilen)
+1. vercel hesabı oluşturun
+2. github repository'nizi bağlayın
+3. environment variables'ları ayarlayın
+4. deploy edin
 
-### Diğer Platformlar
-- **Netlify**: Static export ile
-- **Railway**: Full-stack deployment
-- **Render**: Backend hosting
+### diğer platformlar
+- **netlify**: static export ile
+- **railway**: full-stack deployment
+- **render**: backend hosting
 
-## 🔧 API Endpoints
+## 🔧 api endpoints
 
-### Authentication
-- `POST /api/auth/register` - Kullanıcı kaydı
-- `POST /api/auth/login` - Kullanıcı girişi
+### authentication
+- `post /api/auth/register` - kullanıcı kaydı
+- `post /api/auth/login` - kullanıcı girişi
 
-### Customers
-- `GET /api/customers` - Müşteri listesi
-- `POST /api/customers` - Yeni müşteri
-- `PUT /api/customers/[id]` - Müşteri güncelleme
-- `DELETE /api/customers/[id]` - Müşteri silme
+### customers
+- `get /api/customers` - müşteri listesi
+- `post /api/customers` - yeni müşteri
+- `put /api/customers/[id]` - müşteri güncelleme
+- `delete /api/customers/[id]` - müşteri silme
 
-### Notes
-- `GET /api/notes?customerId=[id]` - Müşteri notları
-- `POST /api/notes` - Yeni not
-- `PUT /api/notes/[id]` - Not güncelleme
-- `DELETE /api/notes/[id]` - Not silme
+### notes
+- `get /api/notes?customerId=[id]` - müşteri notları
+- `post /api/notes` - yeni not
+- `put /api/notes/[id]` - not güncelleme
+- `delete /api/notes/[id]` - not silme
 
-## 🎯 Teknik Özellikler
+## 🎯 teknik özellikler
 
-### Next.js 15 App Router
-- Server Components ile performans optimizasyonu
-- API Routes ile backend entegrasyonu
-- Turbopack ile hızlı development
+### next.js 14 app router
+- server components ile performans optimizasyonu
+- api routes ile backend entegrasyonu
 
-### SQLite3 Entegrasyonu
-- File-based database (kurulum gerektirmez)
-- ACID compliance
-- Otomatik backup ve restore
+### sqlite3 entegrasyonu
+- file-based database (kurulum gerektirmez)
+- acid compliance
+- otomatik backup ve restore
 
-### JWT Authentication
-- Stateless authentication
-- Secure token management
-- Middleware ile route protection
+### jwt authentication
+- stateless authentication
+- secure token management
+- middleware ile route protection
 
-### TypeScript
-- Type safety
-- Better developer experience
-- IntelliSense support
+### typescript
+- type safety
+- better developer experience
+- intellisense support
 
-## 🤝 Katkıda Bulunma
+## 🤝 katkıda bulunma
 
-1. Fork edin
-2. Feature branch oluşturun (`git checkout -b feature/amazing-feature`)
-3. Commit edin (`git commit -m 'Add amazing feature'`)
-4. Push edin (`git push origin feature/amazing-feature`)
-5. Pull Request oluşturun
+1. fork edin
+2. feature branch oluşturun (`git checkout -b feature/amazing-feature`)
+3. commit edin (`git commit -m 'add amazing feature'`)
+4. push edin (`git push origin feature/amazing-feature`)
+5. pull request oluşturun
 
-## 📄 Lisans
+## 📄 lisans
 
-Bu proje MIT lisansı altında lisanslanmıştır.
+bu proje mit lisansı altında lisanslanmıştır.
 
-## 📞 İletişim
+## 📞 iletişim
 
-Proje Sahibi - [@your-twitter](https://twitter.com/your-twitter)
+proje sahibi - [@your-twitter](https://twitter.com/your-twitter)
 
-Proje Linki: [https://github.com/your-username/mini-crm](https://github.com/your-username/mini-crm)
+proje linki: [https://github.com/your-username/mini-crm](https://github.com/your-username/mini-crm)
