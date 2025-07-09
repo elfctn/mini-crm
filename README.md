@@ -78,7 +78,9 @@ npm run dev
 http://localhost:3000
 ```
 
-> not: next.js 14 ile sadece next.config.js veya next.config.mjs dosyası desteklenir. next.config.ts kullanmayın.
+
+**> not: next.js 14 ile sadece next.config.js veya next.config.mjs dosyası desteklenir. next.config.ts kullanmayın.**
+
 
 ## 👤 test kullanıcısı
 
