@@ -37,6 +37,7 @@ export interface Note {
   _id: string;
   content: string;
   customerId: string;
+  customerName?: string; // tüm notlar API'sinden geldiğinde müşteri adı da gelir
   userId: string;
   createdAt: Date;
   updatedAt: Date;

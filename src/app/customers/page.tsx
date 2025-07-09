@@ -147,15 +147,23 @@ function CustomersContent({
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="px-4 py-6 sm:px-0">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Müşteriler</h2>
-            <Link
-              href="/customers/new"
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
-            >
-              Yeni Müşteri Ekle
-            </Link>
-          </div>
+                      <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-gray-900">Müşteriler</h2>
+              <div className="flex space-x-3">
+                <Link
+                  href="/notes"
+                  className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                >
+                  Tüm Notlar
+                </Link>
+                <Link
+                  href="/customers/new"
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                >
+                  Yeni Müşteri Ekle
+                </Link>
+              </div>
+            </div>
 
           {/* Search and Filters */}
           <div className="mb-6 space-y-4">
