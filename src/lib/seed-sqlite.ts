@@ -15,7 +15,7 @@ export async function seedDatabase() {
 
     // test kullanıcısı oluştur
     const hashedPassword = await bcrypt.hash('admin123', 10);
-    const userResult = await dbRun(
+    const userResult: any = await dbRun(
       'INSERT INTO users (name, email, password) VALUES (?, ?, ?)',
       ['Admin User', 'admin@minicrm.com', hashedPassword]
     );
@@ -47,7 +47,7 @@ export async function seedDatabase() {
 
     const customerIds = [];
     for (const customer of customers) {
-      const result = await dbRun(
+      const result: any = await dbRun(
         'INSERT INTO customers (name, email, phone, tags, user_id) VALUES (?, ?, ?, ?, ?)',
         [customer.name, customer.email, customer.phone, customer.tags, userId]
       );
