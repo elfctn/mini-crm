@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Customer, CustomerInput, Note } from '@/types';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
 
 export default function EditCustomerPage({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -78,7 +79,7 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
         setNotes(data.data || []);
       }
     } catch (err) {
-      console.error('Notlar yüklenemedi:', err);
+      console.error('Notlar alınamadı:', err);
     }
   };
 
@@ -106,7 +107,8 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
       const data = await response.json();
 
       if (data.success) {
-        router.push('/customers');
+        setCustomer(data.data);
+        setError('');
       } else {
         setError(data.error || 'Müşteri güncellenemedi');
       }
@@ -117,7 +119,31 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
     }
   };
 
-  const handleDelete = async () => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const addTag = () => {
+    if (tagInput.trim() && !formData.tags.includes(tagInput.trim())) {
+      setFormData({
+        ...formData,
+        tags: [...formData.tags, tagInput.trim()]
+      });
+      setTagInput('');
+    }
+  };
+
+  const removeTag = (tagToRemove: string) => {
+    setFormData({
+      ...formData,
+      tags: formData.tags.filter(tag => tag !== tagToRemove)
+    });
+  };
+
+  const handleDeleteCustomer = async () => {
     if (!confirm('Bu müşteriyi silmek istediğinizden emin misiniz?')) {
       return;
     }
@@ -146,38 +172,7 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value
-    });
-  };
-
-  const addTag = () => {
-    if (tagInput.trim() && !formData.tags.includes(tagInput.trim())) {
-      setFormData({
-        ...formData,
-        tags: [...formData.tags, tagInput.trim()]
-      });
-      setTagInput('');
-    }
-  };
-
-  const removeTag = (tagToRemove: string) => {
-    setFormData({
-      ...formData,
-      tags: formData.tags.filter(tag => tag !== tagToRemove)
-    });
-  };
-
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      addTag();
-    }
-  };
-
-  const handleAddNote = async () => {
+  const addNote = async () => {
     if (!newNote.trim()) return;
 
     setAddingNote(true);
@@ -194,7 +189,7 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
         body: JSON.stringify({
           content: newNote.trim(),
           customerId: params.id
-        })
+        }),
       });
 
       if (response.ok) {
@@ -209,7 +204,7 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
     }
   };
 
-  const handleEditNote = async (noteId: string) => {
+  const updateNote = async (noteId: string) => {
     if (!editNoteContent.trim()) return;
 
     try {
@@ -224,7 +219,7 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
         },
         body: JSON.stringify({
           content: editNoteContent.trim()
-        })
+        }),
       });
 
       if (response.ok) {
@@ -240,8 +235,10 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
     }
   };
 
-  const handleDeleteNote = async (noteId: string) => {
-    if (!confirm('Bu notu silmek istediğinizden emin misiniz?')) return;
+  const deleteNote = async (noteId: string) => {
+    if (!confirm('Bu notu silmek istediğinizden emin misiniz?')) {
+      return;
+    }
 
     try {
       const token = localStorage.getItem('token');
@@ -262,300 +259,270 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
     }
   };
 
-  const startEditNote = (note: Note) => {
-    setEditingNote(note._id);
-    setEditNoteContent(note.content);
-  };
-
-  const cancelEditNote = () => {
-    setEditingNote(null);
-    setEditNoteContent('');
-  };
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Yükleniyor...</p>
+      <ProtectedRoute>
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Yükleniyor...</p>
+          </div>
         </div>
-      </div>
+      </ProtectedRoute>
     );
   }
 
-  if (error && !customer) {
+  if (!customer) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-600 mb-4">{error}</p>
-          <Link
-            href="/customers"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
-          >
-            Müşteri Listesine Dön
-          </Link>
+      <ProtectedRoute>
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-gray-600">Müşteri bulunamadı</p>
+            <Link href="/customers" className="text-blue-600 hover:text-blue-800 mt-2 inline-block">
+              Müşteri listesine dön
+            </Link>
+          </div>
         </div>
-      </div>
+      </ProtectedRoute>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <div className="flex items-center">
-              <Link href="/customers" className="text-blue-600 hover:text-blue-900 mr-4">
-                ← Geri
-              </Link>
-              <h1 className="text-2xl font-bold text-gray-900">Mini CRM</h1>
-            </div>
-            <div className="flex items-center space-x-4">
-              <span className="text-gray-700">Hoş geldiniz!</span>
+    <ProtectedRoute>
+      <div className="min-h-screen bg-gray-50">
+        {/* Header */}
+        <header className="bg-white shadow">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center py-6">
+              <div className="flex items-center">
+                <Link href="/customers" className="text-gray-500 hover:text-gray-700 mr-4">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </Link>
+                <h1 className="text-2xl font-bold text-gray-900">Müşteri Düzenle</h1>
+              </div>
               <button
-                onClick={() => {
-                  localStorage.removeItem('token');
-                  localStorage.removeItem('user');
-                  router.push('/');
-                }}
+                onClick={handleDeleteCustomer}
                 className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
               >
-                Çıkış Yap
+                Müşteriyi Sil
               </button>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-      <main className="max-w-2xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-gray-900">Müşteri Düzenle</h2>
-            <p className="mt-2 text-gray-600">
-              Müşteri bilgilerini güncelleyin.
-            </p>
-          </div>
-
-          <div className="bg-white shadow sm:rounded-lg">
-            <div className="px-4 py-5 sm:p-6">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                {error && (
-                  <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
-                    {error}
-                  </div>
-                )}
-
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-                    Müşteri Adı *
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    name="name"
-                    required
-                    value={formData.name}
-                    onChange={handleChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    placeholder="Müşteri adı ve soyadı"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                    E-posta Adresi *
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    required
-                    value={formData.email}
-                    onChange={handleChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    placeholder="ornek@email.com"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-                    Telefon Numarası *
-                  </label>
-                  <input
-                    type="tel"
-                    id="phone"
-                    name="phone"
-                    required
-                    value={formData.phone}
-                    onChange={handleChange}
-                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    placeholder="+905551234567"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Etiketler
-                  </label>
-                  <div className="flex space-x-2 mb-2">
+        <main className="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8">
+          <div className="px-4 py-6 sm:px-0">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Customer Form */}
+              <div className="bg-white shadow rounded-lg p-6">
+                <h2 className="text-lg font-medium text-gray-900 mb-6">Müşteri Bilgileri</h2>
+                
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {/* Name */}
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                      Ad Soyad *
+                    </label>
                     <input
                       type="text"
-                      value={tagInput}
-                      onChange={(e) => setTagInput(e.target.value)}
-                      onKeyPress={handleKeyPress}
-                      className="flex-1 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                      placeholder="Etiket ekle..."
+                      id="name"
+                      name="name"
+                      required
+                      value={formData.name}
+                      onChange={handleChange}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     />
-                    <button
-                      type="button"
-                      onClick={addTag}
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
-                    >
-                      Ekle
-                    </button>
                   </div>
-                  
-                  {formData.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2">
-                      {formData.tags.map((tag, index) => (
-                        <span
-                          key={index}
-                          className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800"
-                        >
-                          {tag}
-                          <button
-                            type="button"
-                            onClick={() => removeTag(tag)}
-                            className="ml-2 text-blue-600 hover:text-blue-800"
+
+                  {/* Email */}
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                      E-posta *
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      required
+                      value={formData.email}
+                      onChange={handleChange}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+
+                  {/* Phone */}
+                  <div>
+                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
+                      Telefon
+                    </label>
+                    <input
+                      type="tel"
+                      id="phone"
+                      name="phone"
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                    />
+                  </div>
+
+                  {/* Tags */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Etiketler
+                    </label>
+                    <div className="flex gap-2 mb-2">
+                      <input
+                        type="text"
+                        value={tagInput}
+                        onChange={(e) => setTagInput(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), addTag())}
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                        placeholder="Etiket ekle..."
+                      />
+                      <button
+                        type="button"
+                        onClick={addTag}
+                        className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
+                      >
+                        Ekle
+                      </button>
+                    </div>
+                    {formData.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-2">
+                        {formData.tags.map((tag, index) => (
+                          <span
+                            key={index}
+                            className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800"
                           >
-                            ×
-                          </button>
-                        </span>
-                      ))}
+                            {tag}
+                            <button
+                              type="button"
+                              onClick={() => removeTag(tag)}
+                              className="ml-2 text-blue-600 hover:text-blue-800"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Error Message */}
+                  {error && (
+                    <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+                      {error}
                     </div>
                   )}
-                </div>
 
-                <div className="flex justify-between">
-                  <button
-                    type="button"
-                    onClick={handleDelete}
-                    className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
-                  >
-                    Müşteriyi Sil
-                  </button>
-                  
-                  <div className="flex space-x-3">
-                    <Link
-                      href="/customers"
-                      className="bg-gray-300 hover:bg-gray-400 text-gray-700 px-4 py-2 rounded-md text-sm font-medium transition-colors"
-                    >
-                      İptal
-                    </Link>
+                  {/* Submit Button */}
+                  <div className="flex justify-end">
                     <button
                       type="submit"
                       disabled={saving}
-                      className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
-                      {saving ? 'Kaydediliyor...' : 'Kaydet'}
+                      {saving ? 'Kaydediliyor...' : 'Değişiklikleri Kaydet'}
                     </button>
                   </div>
-                </div>
-              </form>
-            </div>
-          </div>
+                </form>
+              </div>
 
-          {/* Notes Section */}
-          <div className="mt-8 bg-white shadow sm:rounded-lg">
-            <div className="px-4 py-5 sm:p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-4">Notlar</h3>
-              
-              {/* Add Note Form */}
-              <div className="mb-6">
-                <div className="flex space-x-2">
+              {/* Notes Section */}
+              <div className="bg-white shadow rounded-lg p-6">
+                <h2 className="text-lg font-medium text-gray-900 mb-6">Notlar</h2>
+                
+                {/* Add Note */}
+                <div className="mb-6">
                   <textarea
                     value={newNote}
                     onChange={(e) => setNewNote(e.target.value)}
                     placeholder="Yeni not ekle..."
-                    className="flex-1 border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm resize-none"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                     rows={3}
                   />
-                  <button
-                    onClick={handleAddNote}
-                    disabled={addingNote || !newNote.trim()}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed self-end"
-                  >
-                    {addingNote ? 'Ekleniyor...' : 'Ekle'}
-                  </button>
+                  <div className="mt-2 flex justify-end">
+                    <button
+                      onClick={addNote}
+                      disabled={addingNote || !newNote.trim()}
+                      className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {addingNote ? 'Ekleniyor...' : 'Not Ekle'}
+                    </button>
+                  </div>
                 </div>
-              </div>
 
-              {/* Notes List */}
-              {notes.length === 0 ? (
-                <div className="text-center py-8 text-gray-500">
-                  <p>Henüz not eklenmemiş</p>
-                </div>
-              ) : (
+                {/* Notes List */}
                 <div className="space-y-4">
                   {notes.map((note) => (
                     <div key={note._id} className="border border-gray-200 rounded-lg p-4">
                       {editingNote === note._id ? (
-                        <div className="space-y-2">
+                        <div>
                           <textarea
                             value={editNoteContent}
                             onChange={(e) => setEditNoteContent(e.target.value)}
-                            className="w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm resize-none"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                             rows={3}
                           />
-                          <div className="flex space-x-2">
+                          <div className="mt-2 flex justify-end space-x-2">
                             <button
-                              onClick={() => handleEditNote(note._id)}
-                              disabled={!editNoteContent.trim()}
-                              className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm font-medium transition-colors disabled:opacity-50"
-                            >
-                              Kaydet
-                            </button>
-                            <button
-                              onClick={cancelEditNote}
-                              className="bg-gray-300 hover:bg-gray-400 text-gray-700 px-3 py-1 rounded text-sm font-medium transition-colors"
+                              onClick={() => {
+                                setEditingNote(null);
+                                setEditNoteContent('');
+                              }}
+                              className="px-3 py-1 text-gray-600 hover:text-gray-800"
                             >
                               İptal
+                            </button>
+                            <button
+                              onClick={() => updateNote(note._id)}
+                              className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                            >
+                              Kaydet
                             </button>
                           </div>
                         </div>
                       ) : (
                         <div>
-                          <div className="flex justify-between items-start mb-2">
-                            <p className="text-sm text-gray-600">
-                              {typeof note.createdAt === 'string' ? note.createdAt : new Date(note.createdAt).toLocaleString('tr-TR')}
-                            </p>
+                          <p className="text-gray-900 mb-2">{note.content}</p>
+                                                     <div className="flex justify-between items-center text-sm text-gray-500">
+                             <span>{typeof note.createdAt === 'string' ? note.createdAt : new Date(note.createdAt).toLocaleString('tr-TR')}</span>
                             <div className="flex space-x-2">
                               <button
-                                onClick={() => startEditNote(note)}
-                                className="text-blue-600 hover:text-blue-900 text-sm font-medium"
+                                onClick={() => {
+                                  setEditingNote(note._id);
+                                  setEditNoteContent(note.content);
+                                }}
+                                className="text-blue-600 hover:text-blue-800"
                               >
                                 Düzenle
                               </button>
                               <button
-                                onClick={() => handleDeleteNote(note._id)}
-                                className="text-red-600 hover:text-red-900 text-sm font-medium"
+                                onClick={() => deleteNote(note._id)}
+                                className="text-red-600 hover:text-red-800"
                               >
                                 Sil
                               </button>
                             </div>
                           </div>
-                          <p className="text-gray-900 whitespace-pre-wrap">{note.content}</p>
                         </div>
                       )}
                     </div>
                   ))}
+                  
+                  {notes.length === 0 && (
+                    <div className="text-center py-8 text-gray-500">
+                      <p>Henüz not eklenmemiş</p>
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
             </div>
           </div>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </ProtectedRoute>
   );
 } 

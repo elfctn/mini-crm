@@ -1,12 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { RegisterForm } from '@/types';
+import { useAuth } from '@/components/AuthProvider';
 
 export default function RegisterPage() {
   const router = useRouter();
+  const { user } = useAuth();
   const [formData, setFormData] = useState<RegisterForm>({
     name: '',
     email: '',
@@ -15,6 +17,13 @@ export default function RegisterPage() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // eğer kullanıcı zaten giriş yapmışsa customers sayfasına yönlendir
+  useEffect(() => {
+    if (user) {
+      router.push('/customers');
+    }
+  }, [user, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -73,6 +82,18 @@ export default function RegisterPage() {
     });
   };
 
+  // eğer kullanıcı giriş yapmışsa loading göster
+  if (user) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Yönlendiriliyor...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -84,7 +105,7 @@ export default function RegisterPage() {
           <p className="mt-2 text-sm text-gray-600">
             Veya{' '}
             <Link href="/login" className="font-medium text-blue-600 hover:text-blue-500">
-              mevcut hesabınıza giriş yapın
+              mevcut hesabınızla giriş yapın
             </Link>
           </p>
         </div>
@@ -94,7 +115,7 @@ export default function RegisterPage() {
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
             {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md text-sm">
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
                 {error}
               </div>
             )}
@@ -196,12 +217,12 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <div className="mt-6 text-center">
+            <div className="mt-6">
               <Link
                 href="/login"
-                className="font-medium text-blue-600 hover:text-blue-500"
+                className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
               >
-                Giriş yapın
+                Giriş Yap
               </Link>
             </div>
           </div>

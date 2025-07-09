@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Customer } from '@/types';
+import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { useAuth } from '@/components/AuthProvider';
 
 export default function CustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);
@@ -10,20 +12,9 @@ export default function CustomersPage() {
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const [user, setUser] = useState<{ email: string; name?: string } | null>(null);
+  const { user, logout } = useAuth();
 
   useEffect(() => {
-    // kullanıcı bilgilerini localstoragedan alacağım 
-    // giriş yapan kullanıcının bilgileri olacak dikkat!!!
-    const userData = localStorage.getItem('user');
-    if (userData) {
-      try {
-        setUser(JSON.parse(userData));
-      } catch (err) {
-        console.error('kullanıcı bilgileri parse edilemedi:', err);
-      }
-    }
-    
     fetchCustomers();
   }, []);
 
@@ -31,7 +22,6 @@ export default function CustomersPage() {
     try {
       const token = localStorage.getItem('token');
       if (!token) {
-        window.location.href = '/login';
         return;
       }
 
@@ -55,10 +45,47 @@ export default function CustomersPage() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    window.location.href = '/';
+    logout();
   };
+
+  return (
+    <ProtectedRoute>
+      <CustomersContent 
+        customers={customers}
+        loading={loading}
+        error={error}
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        selectedTags={selectedTags}
+        setSelectedTags={setSelectedTags}
+        user={user}
+        handleLogout={handleLogout}
+      />
+    </ProtectedRoute>
+  );
+}
+
+function CustomersContent({ 
+  customers, 
+  loading, 
+  error, 
+  searchTerm, 
+  setSearchTerm, 
+  selectedTags, 
+  setSelectedTags, 
+  user, 
+  handleLogout 
+}: {
+  customers: Customer[];
+  loading: boolean;
+  error: string;
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
+  selectedTags: string[];
+  setSelectedTags: React.Dispatch<React.SetStateAction<string[]>>;
+  user: any;
+  handleLogout: () => void;
+}) {
 
   const filteredCustomers = customers.filter(customer => {
     const matchesSearch = customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -152,9 +179,9 @@ export default function CustomersPage() {
                     <button
                       key={tag}
                       onClick={() => {
-                        setSelectedTags(prev => 
+                        setSelectedTags((prev: string[]) => 
                           prev.includes(tag) 
-                            ? prev.filter(t => t !== tag)
+                            ? prev.filter((t: string) => t !== tag)
                             : [...prev, tag]
                         );
                       }}

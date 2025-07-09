@@ -18,6 +18,8 @@ küçük işletmelerin potansiyel müşteri (lead) bilgilerini kaydedebileceği,
 - basit e-posta/şifre ile kullanıcı kaydı ve girişi
 - jwt token ile kullanıcı doğrulama
 - güvenli şifre hashleme (bcryptjs)
+- **otomatik route protection** - giriş yapmamış kullanıcılar korumalı sayfalara erişemez
+- **otomatik yönlendirme** - giriş yapmış kullanıcılar ana sayfa/login/register sayfalarından customers sayfasına yönlendirilir
 
 ### 👥 2. müşteri işlemleri (crud)
 - yeni müşteri ekleme (ad, e-posta, telefon, etiket)
@@ -32,6 +34,12 @@ küçük işletmelerin potansiyel müşteri (lead) bilgilerini kaydedebileceği,
 ### 🔍 4. arama ve filtreleme
 - isim veya etiketle arama
 - etikete göre filtreleme
+
+### 🛡️ 5. authentication middleware
+- **AuthProvider**: tüm uygulamada authentication durumunu yönetir
+- **ProtectedRoute**: korumalı sayfalar için wrapper component
+- **useAuth hook**: authentication durumuna erişim sağlar
+- **otomatik token kontrolü**: her sayfa yüklendiğinde token geçerliliği kontrol edilir
 
 ## 🚀 kurulum
 
@@ -83,69 +91,6 @@ npm run dev -- -p 3000
 http://localhost:3000
 ```
 
-**not:** eğer port 3000 doluysa, next.js otomatik olarak 3001, 3002 gibi boş portları deneyecektir. terminal çıktısında hangi portta çalıştığını görebilirsiniz. sabit port kullanmak için `-p 3000` parametresini ekleyebilirsiniz.
-
-
-**> not: next.js 14 ile sadece next.config.js veya next.config.mjs dosyası desteklenir. next.config.ts kullanmayın.**
-
-
-## 👤 test kullanıcısı
-
-uygulama ilk çalıştırıldığında otomatik olarak bir test kullanıcısı oluşturulur:
-
-- **email**: admin@minicrm.com
-- **şifre**: admin123
-
-## 📁 proje yapısı
-
-```
-mini-crm/
-├── src/
-│   ├── app/
-│   │   ├── api/
-│   │   │   ├── auth/
-│   │   │   │   ├── login/
-│   │   │   │   └── register/
-│   │   │   ├── customers/
-│   │   │   └── notes/
-│   │   ├── customers/
-│   │   ├── login/
-│   │   └── register/
-│   ├── lib/
-│   │   ├── sqlite.ts
-│   │   ├── auth.ts
-│   │   └── seed-sqlite.ts
-│   ├── types/
-├── public/
-├── mini-crm.db (sqlite database)
-└── package.json
-```
-
-## 🧪 test
-
-tüm api endpointlerini test etmek için postman koleksiyonu kullanabilirsin.
-
-1. postman uygulamasını aç
-2. 'import' butonuna tıkla ve bu repodaki 'MiniCRM.postman_collection.json' dosyasını seç
-3. koleksiyon eklendikten sonra önce 'kullanıcı girişi (login)' isteğini çalıştır
-4. dönen jwt token'ı kopyala ve postman'da 'variables' kısmında 'token' değişkenine yapıştır
-5. artık tüm korumalı endpointleri (müşteri, not işlemleri) test edebilirsin
-
-her isteğin açıklaması ve örnek body'leri koleksiyonda mevcut
-
-## 🚀 deployment
-
-### vercel (önerilen)
-1. vercel hesabı oluşturun
-2. github repository'nizi bağlayın
-3. environment variables'ları ayarlayın
-4. deploy edin
-
-### diğer platformlar
-- **netlify**: static export ile
-- **railway**: full-stack deployment
-- **render**: backend hosting
-
 ## 🔧 api endpoints
 
 ### authentication
@@ -185,6 +130,25 @@ her isteğin açıklaması ve örnek body'leri koleksiyonda mevcut
 - better developer experience
 - intellisense support
 
+### authentication middleware
+- **AuthProvider**: context-based authentication state management
+- **ProtectedRoute**: route protection wrapper
+- **useAuth hook**: authentication utilities
+- **automatic redirects**: smart navigation based on auth state
+
+## 🛡️ güvenlik özellikleri
+
+### route protection
+- korumalı sayfalar: `/customers`, `/customers/new`, `/customers/[id]`
+- public sayfalar: `/`, `/login`, `/register`
+- otomatik yönlendirme: giriş yapmış kullanıcılar public sayfalardan customers'a yönlendirilir
+- otomatik login kontrolü: giriş yapmamış kullanıcılar korumalı sayfalardan login'e yönlendirilir
+
+### token management
+- localStorage'da güvenli token saklama
+- otomatik token geçerlilik kontrolü
+- otomatik logout: geçersiz token durumunda kullanıcı çıkış yapar
+
 ## 🤝 katkıda bulunma
 
 1. fork edin
@@ -218,12 +182,14 @@ a simple crm system for small businesses to record, track, and take notes on pot
 - simple email/password user registration and login
 - jwt token user authentication
 - secure password hashing (bcryptjs)
+- **automatic route protection** - unauthenticated users cannot access protected pages
+- **automatic redirects** - authenticated users are redirected from public pages to customers page
 
 ### 👥 2. customer operations (crud)
-- add new customer (name, email, phone, tags)
+- add new customers (name, email, phone, tags)
 - view customer list
 - update customer information
-- delete customer
+- delete customers
 
 ### 📝 3. note taking
 - add special notes to each customer card (date + description)
@@ -232,6 +198,12 @@ a simple crm system for small businesses to record, track, and take notes on pot
 ### 🔍 4. search and filtering
 - search by name or tags
 - filter by tags
+
+### 🛡️ 5. authentication middleware
+- **AuthProvider**: manages authentication state across the entire application
+- **ProtectedRoute**: wrapper component for protected pages
+- **useAuth hook**: provides access to authentication state
+- **automatic token validation**: token validity is checked on every page load
 
 ## 🚀 installation
 
@@ -257,7 +229,7 @@ npm install
 cp env.example .env.local
 ```
 
-edit the `.env.local` file:
+edit `.env.local` file:
 ```env
 JWT_SECRET=your-super-secret-jwt-key-here
 NEXTAUTH_SECRET=your-nextauth-secret
@@ -273,7 +245,7 @@ npm run seed
 npm run dev
 ```
 
-**alternatively, to use a fixed port:**
+**alternative with fixed port:**
 ```bash
 npm run dev -- -p 3000
 ```
@@ -282,67 +254,6 @@ npm run dev -- -p 3000
 ```
 http://localhost:3000
 ```
-
-**note:** if port 3000 is busy, next.js will automatically try ports 3001, 3002, etc. you can see which port it's running on in the terminal output. you can use `-p 3000` parameter to use a fixed port.
-
-**> note: with next.js 14, only next.config.js or next.config.mjs files are supported. do not use next.config.ts.**
-
-## 👤 test user
-
-when the application is first run, a test user is automatically created:
-
-- **email**: admin@minicrm.com
-- **password**: admin123
-
-## 📁 project structure
-
-```
-mini-crm/
-├── src/
-│   ├── app/
-│   │   ├── api/
-│   │   │   ├── auth/
-│   │   │   │   ├── login/
-│   │   │   │   └── register/
-│   │   │   ├── customers/
-│   │   │   └── notes/
-│   │   ├── customers/
-│   │   ├── login/
-│   │   └── register/
-│   ├── lib/
-│   │   ├── sqlite.ts
-│   │   ├── auth.ts
-│   │   └── seed-sqlite.ts
-│   ├── types/
-├── public/
-├── mini-crm.db (sqlite database)
-└── package.json
-```
-
-## 🧪 testing
-
-you can use the postman collection to test all api endpoints.
-
-1. open postman application
-2. click 'import' button and select the 'MiniCRM.postman_collection.json' file from this repo
-3. after the collection is added, first run the 'user login (login)' request
-4. copy the returned jwt token and paste it in the 'token' variable in postman's 'variables' section
-5. now you can test all protected endpoints (customer, note operations)
-
-each request's description and example bodies are available in the collection
-
-## 🚀 deployment
-
-### vercel (recommended)
-1. create a vercel account
-2. connect your github repository
-3. set up environment variables
-4. deploy
-
-### other platforms
-- **netlify**: with static export
-- **railway**: full-stack deployment
-- **render**: backend hosting
 
 ## 🔧 api endpoints
 
@@ -383,13 +294,32 @@ each request's description and example bodies are available in the collection
 - better developer experience
 - intellisense support
 
+### authentication middleware
+- **AuthProvider**: context-based authentication state management
+- **ProtectedRoute**: route protection wrapper
+- **useAuth hook**: authentication utilities
+- **automatic redirects**: smart navigation based on auth state
+
+## 🛡️ security features
+
+### route protection
+- protected pages: `/customers`, `/customers/new`, `/customers/[id]`
+- public pages: `/`, `/login`, `/register`
+- automatic redirects: authenticated users are redirected from public pages to customers
+- automatic login check: unauthenticated users are redirected from protected pages to login
+
+### token management
+- secure token storage in localStorage
+- automatic token validity checking
+- automatic logout: user is logged out when token is invalid
+
 ## 🤝 contributing
 
 1. fork the project
-2. create a feature branch (`git checkout -b feature/amazing-feature`)
-3. commit your changes (`git commit -m 'add amazing feature'`)
-4. push to the branch (`git push origin feature/amazing-feature`)
-5. create a pull request
+2. create feature branch (`git checkout -b feature/amazing-feature`)
+3. commit changes (`git commit -m 'add amazing feature'`)
+4. push to branch (`git push origin feature/amazing-feature`)
+5. create pull request
 
 ## 📄 Project Owner
 ELIF CETIN

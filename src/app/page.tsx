@@ -1,6 +1,45 @@
+'use client';
+
 import Link from 'next/link';
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { useAuth } from '@/components/AuthProvider';
 
 export default function Home() {
+  const router = useRouter();
+  const { user, loading } = useAuth();
+
+  // eğer kullanıcı giriş yapmışsa customers sayfasına yönlendir
+  useEffect(() => {
+    if (!loading && user) {
+      router.push('/customers');
+    }
+  }, [user, loading, router]);
+
+  // loading durumunda spinner göster
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Yükleniyor...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // eğer kullanıcı giriş yapmışsa loading göster (yönlendirme sırasında)
+  if (user) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Yönlendiriliyor...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
       {/* Header */}
