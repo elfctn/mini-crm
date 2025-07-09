@@ -3,7 +3,7 @@ import { dbGet, dbRun, dbAll, initDatabase } from '@/lib/sqlite';
 import { authenticateUser, createErrorResponse } from '@/lib/auth';
 import { NoteInput } from '@/types';
 
-// get - tüm notlar
+// tüm notlar endpoint'i
 export async function GET(request: NextRequest) {
   try {
     // veritabanını başlat
@@ -12,15 +12,11 @@ export async function GET(request: NextRequest) {
     // kullanıcıyı doğrula
     const user = await authenticateUser(request);
 
-    console.log('Not listesi isteniyor:', { userId: user._id });
-
     // kullanıcının tüm notlarını getir
     const notes: any = await dbAll(
       'SELECT * FROM notes WHERE user_id = ? ORDER BY created_at DESC',
       [user._id]
     );
-
-    console.log('Bulunan not sayısı:', notes.length);
 
     // notları formatla
     const formattedNotes = notes.map((note: any) => ({
@@ -38,12 +34,12 @@ export async function GET(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('get notes error:', error);
-    return createErrorResponse('Not listesi alınamadı', 500);
+    console.error('not listesi hatası:', error);
+    return createErrorResponse('not listesi alınamadı', 500);
   }
 }
 
-// post - yeni not
+// yeni not ekleme endpoint'i
 export async function POST(request: NextRequest) {
   try {
     // veritabanını başlat
@@ -52,16 +48,12 @@ export async function POST(request: NextRequest) {
     // kullanıcıyı doğrula
     const user = await authenticateUser(request);
 
-    console.log('Yeni not ekleniyor:', { userId: user._id });
-
     const body: NoteInput = await request.json();
     const { content, customerId } = body;
 
-    console.log('Not verileri:', { content, customerId });
-
     // doğrulama
     if (!content || !customerId) {
-      return createErrorResponse('İçerik ve müşteri ID gereklidir', 400);
+      return createErrorResponse('içerik ve müşteri id gereklidir', 400);
     }
 
     // müşterinin var olup olmadığını kontrol et
@@ -71,7 +63,7 @@ export async function POST(request: NextRequest) {
     );
 
     if (!customer) {
-      return createErrorResponse('Müşteri bulunamadı', 404);
+      return createErrorResponse('müşteri bulunamadı', 404);
     }
 
     // yeni not ekle
@@ -79,8 +71,6 @@ export async function POST(request: NextRequest) {
       'INSERT INTO notes (content, customer_id, user_id) VALUES (?, ?, ?)',
       [content, customerId, user._id]
     );
-
-    console.log('Not eklendi:', { id: result.lastID, customerId });
 
     // yeni notu getir
     const newNote: any = await dbGet(
@@ -100,11 +90,11 @@ export async function POST(request: NextRequest) {
     return Response.json({
       success: true,
       data: formattedNote,
-      message: 'Not başarıyla eklendi'
+      message: 'not başarıyla eklendi'
     });
 
   } catch (error) {
-    console.error('create note error:', error);
-    return createErrorResponse('Not eklenemedi', 500);
+    console.error('not ekleme hatası:', error);
+    return createErrorResponse('not eklenemedi', 500);
   }
 } 

@@ -2,32 +2,27 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyToken, extractTokenFromHeader } from './jwt';
 import { User } from '@/types';
 
-// requeste user eklemek için özel bir interface tanımladım
+// kullanıcı bilgilerini içeren request interface'i
 export interface AuthenticatedRequest extends NextRequest {
   user?: User;
 }
 
-// bu fonksiyon request içindeki tokenı alıyor doğruluyor ve kullanıcı bilgilerini dönüyorr
+// request'teki token'ı doğrula ve kullanıcı bilgilerini döndür
 export async function authenticateUser(request: NextRequest): Promise<User> {
   try {
-    // authorization headerı alıyorum
+    // authorization header'ı al
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {
-      console.log('Authorization header eksik');
-      throw new Error('Authorization header missing');
+      throw new Error('authorization header eksik');
     }
 
-    console.log('Authorization header mevcut:', authHeader.substring(0, 20) + '...');
-
-    // tokenı headerdan çıkarıyorum
+    // token'ı header'dan çıkar
     const token = extractTokenFromHeader(authHeader);
-    console.log('Token çıkarıldı, uzunluk:', token.length);
     
-    // tokenı doğrulayıp içindeki verileri alıyorum
+    // token'ı doğrula ve içindeki verileri al
     const decoded: any = verifyToken(token);
-    console.log('Token doğrulandı, decoded:', { userId: decoded.userId, email: decoded.email });
     
-    // decoded bilgileri user formatına çevirip geri dönüyorum
+    // decoded bilgileri user formatına çevir
     const user: User = {
       _id: decoded.userId,
       email: decoded.email,
@@ -36,32 +31,27 @@ export async function authenticateUser(request: NextRequest): Promise<User> {
       updatedAt: new Date()
     };
 
-    console.log('Kullanıcı doğrulandı:', user.name);
     return user;
   } catch (error) {
-    console.error('Authentication failed:', error);
-    throw new Error('Authentication failed');
+    console.error('kullanıcı doğrulama hatası:', error);
+    throw new Error('kimlik doğrulama başarısız');
   }
 }
 
-// başarılı giriş sonrası döneceğimiz json response 
+// başarılı giriş sonrası json response oluştur
 export function createAuthResponse(user: User, token: string) {
-  console.log('Auth response oluşturuluyor:', { userId: user._id, tokenLength: token.length });
-  
   return NextResponse.json({
     success: true,
     data: {
       user,
       token
     },
-    message: 'Authentication successful'
+    message: 'giriş başarılı'
   });
 }
 
-// hata durumlarında döneceğimiz json response
+// hata durumlarında json response oluştur
 export function createErrorResponse(message: string, status: number = 400) {
-  console.log('Error response oluşturuluyor:', { message, status });
-  
   return NextResponse.json(
     {
       success: false,

@@ -5,6 +5,7 @@ import { generateToken } from '@/lib/jwt';
 import { createAuthResponse, createErrorResponse } from '@/lib/auth';
 import { RegisterForm } from '@/types';
 
+// kullanıcı kayıt endpoint'i
 export async function POST(request: NextRequest) {
   try {
     // veritabanını başlat
@@ -13,27 +14,25 @@ export async function POST(request: NextRequest) {
     const body: RegisterForm = await request.json();
     const { name, email, password } = body;
 
-    console.log('Register denemesi:', { name, email, passwordLength: password?.length });
-
     // doğrulama
     if (!name || !email || !password) {
-      return createErrorResponse('Ad, e-posta ve şifre gereklidir', 400);
+      return createErrorResponse('ad, e-posta ve şifre gereklidir', 400);
     }
 
     if (password.length < 6) {
-      return createErrorResponse('Şifre en az 6 karakter olmalıdır', 400);
+      return createErrorResponse('şifre en az 6 karakter olmalıdır', 400);
     }
 
     // e-posta formatını kontrol et
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      return createErrorResponse('Geçerli bir e-posta adresi giriniz', 400);
+      return createErrorResponse('geçerli bir e-posta adresi giriniz', 400);
     }
 
     // kullanıcının zaten var olup olmadığını kontrol et
     const existingUser = await dbGet('SELECT * FROM users WHERE email = ?', [email]);
     if (existingUser) {
-      return createErrorResponse('Bu e-posta adresi zaten kullanılıyor', 400);
+      return createErrorResponse('bu e-posta adresi zaten kullanılıyor', 400);
     }
 
     // şifreyi hashle
@@ -45,8 +44,6 @@ export async function POST(request: NextRequest) {
       [name, email, hashedPassword]
     );
 
-    console.log('Kullanıcı oluşturuldu:', { id: result.lastID, name, email });
-
     // token oluştur
     const userForToken = {
       _id: result.lastID.toString(),
@@ -57,12 +54,10 @@ export async function POST(request: NextRequest) {
     };
     const token = generateToken(userForToken);
 
-    console.log('Register başarılı:', { userId: result.lastID, tokenLength: token.length });
-
     return createAuthResponse(userForToken, token);
 
   } catch (error) {
-    console.error('Register error:', error);
-    return createErrorResponse('Kayıt işlemi başarısız', 500);
+    console.error('kayıt hatası:', error);
+    return createErrorResponse('kayıt işlemi başarısız', 500);
   }
 } 

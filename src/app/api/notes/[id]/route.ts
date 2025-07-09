@@ -3,7 +3,7 @@ import { dbGet, dbRun, dbAll, initDatabase } from '@/lib/sqlite';
 import { authenticateUser, createErrorResponse } from '@/lib/auth';
 import { NoteInput } from '@/types';
 
-// put - not güncelleme
+// not güncelleme endpoint'i
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -16,16 +16,12 @@ export async function PUT(
     const user = await authenticateUser(request);
     const noteId = params.id;
 
-    console.log('Not güncelleniyor:', { userId: user._id, noteId });
-
     const body: NoteInput = await request.json();
     const { content } = body;
 
-    console.log('Güncelleme verileri:', { content });
-
     // doğrulama
     if (!content) {
-      return createErrorResponse('İçerik gereklidir', 400);
+      return createErrorResponse('içerik gereklidir', 400);
     }
 
     // notun var olup olmadığını kontrol et
@@ -35,7 +31,7 @@ export async function PUT(
     );
 
     if (!existingNote) {
-      return createErrorResponse('Not bulunamadı', 404);
+      return createErrorResponse('not bulunamadı', 404);
     }
 
     // notu güncelle
@@ -43,8 +39,6 @@ export async function PUT(
       'UPDATE notes SET content = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND user_id = ?',
       [content, noteId, user._id]
     );
-
-    console.log('Not güncellendi:', { noteId });
 
     // güncellenmiş notu getir
     const updatedNote: any = await dbGet(
@@ -64,16 +58,16 @@ export async function PUT(
     return Response.json({
       success: true,
       data: formattedNote,
-      message: 'Not başarıyla güncellendi'
+      message: 'not başarıyla güncellendi'
     });
 
   } catch (error) {
-    console.error('update note error:', error);
-    return createErrorResponse('Not güncellenemedi', 500);
+    console.error('not güncelleme hatası:', error);
+    return createErrorResponse('not güncellenemedi', 500);
   }
 }
 
-// delete - not silme
+// not silme endpoint'i
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
@@ -86,8 +80,6 @@ export async function DELETE(
     const user = await authenticateUser(request);
     const noteId = params.id;
 
-    console.log('Not siliniyor:', { userId: user._id, noteId });
-
     // notun var olup olmadığını kontrol et
     const existingNote: any = await dbGet(
       'SELECT * FROM notes WHERE id = ? AND user_id = ?',
@@ -95,7 +87,7 @@ export async function DELETE(
     );
 
     if (!existingNote) {
-      return createErrorResponse('Not bulunamadı', 404);
+      return createErrorResponse('not bulunamadı', 404);
     }
 
     // notu sil
@@ -104,15 +96,13 @@ export async function DELETE(
       [noteId, user._id]
     );
 
-    console.log('Not silindi:', { noteId });
-
     return Response.json({
       success: true,
-      message: 'Not başarıyla silindi'
+      message: 'not başarıyla silindi'
     });
 
   } catch (error) {
-    console.error('delete note error:', error);
-    return createErrorResponse('Not silinemedi', 500);
+    console.error('not silme hatası:', error);
+    return createErrorResponse('not silinemedi', 500);
   }
 } 

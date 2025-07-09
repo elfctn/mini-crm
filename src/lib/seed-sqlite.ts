@@ -1,18 +1,15 @@
 import bcrypt from 'bcryptjs';
 import { dbGet, dbRun, dbAll } from './sqlite';
 
+// veritabanını demo verilerle doldur
 export async function seedDatabase() {
   try {
-    console.log('Seed işlemi başlatılıyor...');
-
     // kullanıcıların var olup olmadığını kontrol et
     const existingUsers = await dbAll('SELECT COUNT(*) as count FROM users');
     const userCount = existingUsers[0]?.count || 0;
 
-    console.log('Mevcut kullanıcı sayısı:', userCount);
-
+    // eğer kullanıcı varsa seed işlemini atla
     if (userCount > 0) {
-      console.log('Seed işlemi zaten yapılmış, atlanıyor...');
       return;
     }
 
@@ -25,7 +22,6 @@ export async function seedDatabase() {
     );
 
     const userId = result.lastID;
-    console.log('Demo kullanıcı oluşturuldu:', { id: userId, email: 'admin@minicrm.com' });
 
     // demo müşteriler oluştur
     const demoCustomers = [
@@ -49,23 +45,18 @@ export async function seedDatabase() {
       }
     ];
 
+    // her müşteri için demo veriler oluştur
     for (const customer of demoCustomers) {
       const customerResult: any = await dbRun(
         'INSERT INTO customers (name, email, phone, tags, user_id) VALUES (?, ?, ?, ?, ?)',
         [customer.name, customer.email, customer.phone, JSON.stringify(customer.tags), userId]
       );
 
-      console.log('Demo müşteri oluşturuldu:', { 
-        id: customerResult.lastID, 
-        name: customer.name,
-        email: customer.email 
-      });
-
       // her müşteri için demo notlar oluştur
       const demoNotes = [
-        'İlk görüşme yapıldı, proje detayları konuşuldu.',
-        'Teklif hazırlandı ve gönderildi.',
-        'Takip telefonu yapılacak.'
+        'ilk görüşme yapıldı, proje detayları konuşuldu.',
+        'teklif hazırlandı ve gönderildi.',
+        'takip telefonu yapılacak.'
       ];
 
       for (const note of demoNotes) {
@@ -74,17 +65,10 @@ export async function seedDatabase() {
           [note, customerResult.lastID, userId]
         );
       }
-
-      console.log('Demo notlar oluşturuldu:', { customerId: customerResult.lastID, noteCount: demoNotes.length });
     }
 
-    console.log('Seed işlemi başarıyla tamamlandı!');
-    console.log('Demo hesap bilgileri:');
-    console.log('Email: admin@minicrm.com');
-    console.log('Şifre: admin123');
-
   } catch (error) {
-    console.error('Seed işlemi hatası:', error);
+    console.error('seed işlemi hatası:', error);
     throw error;
   }
 }

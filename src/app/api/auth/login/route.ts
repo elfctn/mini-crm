@@ -5,6 +5,7 @@ import { generateToken } from '@/lib/jwt';
 import { createAuthResponse, createErrorResponse } from '@/lib/auth';
 import { LoginForm } from '@/types';
 
+// kullanıcı giriş endpoint'i
 export async function POST(request: NextRequest) {
   try {
     // veritabanını başlat
@@ -13,30 +14,22 @@ export async function POST(request: NextRequest) {
     const body: LoginForm = await request.json();
     const { email, password } = body;
 
-    console.log('Login denemesi:', { email, passwordLength: password?.length });
-
     // doğrulama
     if (!email || !password) {
-      return createErrorResponse('E-posta ve şifre gereklidir', 400);
+      return createErrorResponse('e-posta ve şifre gereklidir', 400);
     }
 
     // kullanıcıyı bul
     const user: any = await dbGet('SELECT * FROM users WHERE email = ?', [email]);
     if (!user) {
-      console.log('Kullanıcı bulunamadı:', email);
-      return createErrorResponse('Geçersiz e-posta veya şifre', 401);
+      return createErrorResponse('geçersiz e-posta veya şifre', 401);
     }
-
-    console.log('Kullanıcı bulundu:', { id: user.id, name: user.name });
 
     // şifreyi kontrol et
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      console.log('Şifre yanlış:', email);
-      return createErrorResponse('Geçersiz e-posta veya şifre', 401);
+      return createErrorResponse('geçersiz e-posta veya şifre', 401);
     }
-
-    console.log('Şifre doğru, token oluşturuluyor...');
 
     // token oluştur
     const userForToken = {
@@ -48,12 +41,10 @@ export async function POST(request: NextRequest) {
     };
     const token = generateToken(userForToken);
 
-    console.log('Login başarılı:', { userId: user.id, tokenLength: token.length });
-
     return createAuthResponse(userForToken, token);
 
   } catch (error) {
-    console.error('Login error:', error);
-    return createErrorResponse('Giriş işlemi başarısız', 500);
+    console.error('giriş hatası:', error);
+    return createErrorResponse('giriş işlemi başarısız', 500);
   }
 } 

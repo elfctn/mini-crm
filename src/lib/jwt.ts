@@ -1,49 +1,44 @@
 import jwt from 'jsonwebtoken';
 import { User } from '@/types';
 
-// .env da olan jwt secretı alıyorum, yoksa fallback değer kullanıyorum
+// jwt secret - canlı ortamda mutlaka değiştirin
 const JWT_SECRET = process.env.JWT_SECRET || 'mini-crm-super-secret-jwt-key-2024-production-fallback';
 
-console.log('JWT_SECRET mevcut:', !!process.env.JWT_SECRET);
-console.log('JWT_SECRET uzunluğu:', JWT_SECRET.length);
-
-// bu fonksiyon verilen kullanıcı bilgileriyle bir jwt token oluşturuyor
+// kullanıcı bilgileriyle jwt token oluştur
 export function generateToken(user: User): string {
   try {
     const token = jwt.sign(
       { 
-        userId: user._id,     // kullanıcı idssini payloada ekliyoruz
-        email: user.email,    // emaili ekliyoruz
-        name: user.name       // ismi ekliyoruz
+        userId: user._id,     // kullanıcı id'si
+        email: user.email,    // email adresi
+        name: user.name       // kullanıcı adı
       },
-      JWT_SECRET,             // şifreleme için jwt secret kullanılıyor
-      { expiresIn: '7d' }     // token 7 gün geçerli ayarladım
+      JWT_SECRET,             // şifreleme anahtarı
+      { expiresIn: '7d' }     // 7 gün geçerli
     );
-    console.log('Token oluşturuldu, uzunluk:', token.length);
     return token;
   } catch (error) {
-    console.error('Token oluşturma hatası:', error);
+    console.error('token oluşturma hatası:', error);
     throw error;
   }
 }
 
-// bu fonksiyon verilen tokenı doğrular ve içeriğini döner
+// token'ı doğrula ve içeriğini döndür
 export function verifyToken(token: string): any {
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    console.log('Token doğrulandı:', !!decoded);
     return decoded;
   } catch (error) {
-    console.error('Token doğrulama hatası:', error);
-    throw new Error('Invalid token');
+    console.error('token doğrulama hatası:', error);
+    throw new Error('geçersiz token');
   }
 }
 
-// bu fonksiyon authorization headerdan sadece token kısmını ayıklıyor
+// authorization header'dan token'ı çıkar
 export function extractTokenFromHeader(authHeader: string): string {
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    throw new Error('Invalid authorization header');
+    throw new Error('geçersiz authorization header');
   }
   
-  return authHeader.substring(7); // -Bearer - kelimesinden sonrasını alır (sadece token!!!)
+  return authHeader.substring(7); // "Bearer " kısmını çıkar
 }

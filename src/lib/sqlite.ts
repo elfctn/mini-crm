@@ -6,6 +6,7 @@ import fs from 'fs';
 
 let db: Database | null = null;
 
+// veritabanı başlatma fonksiyonu
 export async function initDatabase() {
   if (db) {
     return db;
@@ -17,20 +18,15 @@ export async function initDatabase() {
       ? path.join(process.cwd(), 'mini-crm.db')
       : path.join(process.cwd(), 'mini-crm.db');
 
-    console.log('Veritabanı yolu:', dbPath);
-    console.log('Çalışma dizini:', process.cwd());
-    console.log('NODE_ENV:', process.env.NODE_ENV);
-
     // veritabanı dosyasının var olup olmadığını kontrol et
     const dbExists = fs.existsSync(dbPath);
-    console.log('Veritabanı dosyası mevcut:', dbExists);
 
     db = await open({
       filename: dbPath,
       driver: sqlite3.Database
     });
 
-    // tabloları oluştur
+    // kullanıcılar tablosu
     await db.exec(`
       CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -42,6 +38,7 @@ export async function initDatabase() {
       )
     `);
 
+    // müşteriler tablosu
     await db.exec(`
       CREATE TABLE IF NOT EXISTS customers (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -56,6 +53,7 @@ export async function initDatabase() {
       )
     `);
 
+    // notlar tablosu
     await db.exec(`
       CREATE TABLE IF NOT EXISTS notes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -73,17 +71,17 @@ export async function initDatabase() {
     try {
       await seedDatabase();
     } catch (error) {
-      console.log('Seed işlemi zaten yapılmış veya hata oluştu:', error);
+      // seed işlemi zaten yapılmış olabilir
     }
 
-    console.log('Veritabanı başarıyla başlatıldı');
     return db;
   } catch (error) {
-    console.error('Veritabanı başlatma hatası:', error);
+    console.error('veritabanı başlatma hatası:', error);
     throw error;
   }
 }
 
+// veritabanı bağlantısını al
 export async function getDatabase() {
   if (!db) {
     await initDatabase();
@@ -91,39 +89,43 @@ export async function getDatabase() {
   return db;
 }
 
+// sql çalıştır (insert, update, delete)
 export async function dbRun(sql: string, params: any[] = []): Promise<any> {
   try {
     const database = await getDatabase();
-    if (!database) throw new Error('Database connection failed');
+    if (!database) throw new Error('veritabanı bağlantısı başarısız');
     return database.run(sql, params);
   } catch (error) {
-    console.error('Database run error:', error);
+    console.error('veritabanı çalıştırma hatası:', error);
     throw error;
   }
 }
 
+// tek satır getir
 export async function dbGet(sql: string, params: any[] = []): Promise<any> {
   try {
     const database = await getDatabase();
-    if (!database) throw new Error('Database connection failed');
+    if (!database) throw new Error('veritabanı bağlantısı başarısız');
     return database.get(sql, params);
   } catch (error) {
-    console.error('Database get error:', error);
+    console.error('veritabanı getirme hatası:', error);
     throw error;
   }
 }
 
+// tüm satırları getir
 export async function dbAll(sql: string, params: any[] = []): Promise<any[]> {
   try {
     const database = await getDatabase();
-    if (!database) throw new Error('Database connection failed');
+    if (!database) throw new Error('veritabanı bağlantısı başarısız');
     return database.all(sql, params);
   } catch (error) {
-    console.error('Database all error:', error);
+    console.error('veritabanı listeleme hatası:', error);
     throw error;
   }
 }
 
+// veritabanı bağlantısını kapat
 export async function closeDatabase() {
   if (db) {
     await db.close();

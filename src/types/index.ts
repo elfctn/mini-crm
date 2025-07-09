@@ -7,13 +7,21 @@ export interface User {
   updatedAt: Date;
 }
 
-export interface UserInput {
+// kullanıcı kayıt formu
+export interface RegisterForm {
+  name: string;
   email: string;
   password: string;
-  name: string;
+  confirmPassword: string;
 }
 
-// müşteri tipleri
+// kullanıcı giriş formu
+export interface LoginForm {
+  email: string;
+  password: string;
+}
+
+// müşteri tipi
 export interface Customer {
   _id: string;
   name: string;
@@ -25,6 +33,7 @@ export interface Customer {
   updatedAt: Date;
 }
 
+// müşteri ekleme/güncelleme formu
 export interface CustomerInput {
   name: string;
   email: string;
@@ -32,7 +41,7 @@ export interface CustomerInput {
   tags: string[];
 }
 
-// not tipleri
+// not tipi
 export interface Note {
   _id: string;
   content: string;
@@ -43,12 +52,13 @@ export interface Note {
   updatedAt: Date;
 }
 
+// not ekleme/güncelleme formu
 export interface NoteInput {
   content: string;
   customerId: string;
 }
 
-// api yanıt tipleri
+// api yanıt tipi
 export interface ApiResponse<T> {
   success: boolean;
   data?: T;
@@ -56,25 +66,13 @@ export interface ApiResponse<T> {
   error?: string;
 }
 
+// auth yanıt tipi
 export interface AuthResponse {
   user: User;
   token: string;
 }
 
-// form tipleri
-export interface LoginForm {
-  email: string;
-  password: string;
-}
-
-export interface RegisterForm {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-}
-
-// filtre tipleri
+// müşteri filtre tipi
 export interface CustomerFilters {
   search?: string;
   tags?: string[];

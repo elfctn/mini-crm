@@ -4,6 +4,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { useRouter, usePathname } from 'next/navigation';
 import { User } from '@/types';
 
+// auth context tipi
 interface AuthContextType {
   user: User | null;
   loading: boolean;
@@ -13,6 +14,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+// auth provider bileşeni
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -22,6 +24,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // public routes - authentication gerektirmeyen sayfalar
   const publicRoutes = ['/', '/login', '/register'];
 
+  // kullanıcı kimlik doğrulamasını kontrol et
   const checkAuth = async (): Promise<boolean> => {
     try {
       // localStorage'a erişim kontrolü
@@ -33,7 +36,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const userData = localStorage.getItem('user');
       
       if (!token || !userData) {
-        console.log('Token veya user data bulunamadı');
         return false;
       }
 
@@ -41,15 +43,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const payload = JSON.parse(atob(token.split('.')[1]));
       const currentTime = Date.now() / 1000;
       
-      console.log('Token kontrolü:', { 
-        exp: payload.exp, 
-        currentTime, 
-        isValid: payload.exp > currentTime 
-      });
-      
       if (payload.exp < currentTime) {
         // token süresi dolmuş
-        console.log('Token süresi dolmuş');
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         setUser(null);
@@ -58,10 +53,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
       const parsedUser = JSON.parse(userData);
       setUser(parsedUser);
-      console.log('Kullanıcı doğrulandı:', parsedUser.name);
       return true;
     } catch (error) {
-      console.error('Auth check error:', error);
+      console.error('auth kontrol hatası:', error);
       // hata durumunda temizle
       if (typeof window !== 'undefined') {
         localStorage.removeItem('token');
@@ -72,6 +66,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  // kullanıcı çıkış yap
   const logout = () => {
     if (typeof window !== 'undefined') {
       localStorage.removeItem('token');
@@ -81,22 +76,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     router.push('/login');
   };
 
+  // auth durumunu kontrol et ve yönlendir
   useEffect(() => {
     const handleAuth = async () => {
-      console.log('Auth kontrolü başlatılıyor:', { pathname });
-      
       const isPublicRoute = publicRoutes.includes(pathname);
       const isAuthenticated = await checkAuth();
 
-      console.log('Auth durumu:', { isPublicRoute, isAuthenticated, pathname });
-
       if (!isAuthenticated && !isPublicRoute) {
         // kullanıcı giriş yapmamış ve public route değilse login'e yönlendir
-        console.log('Login sayfasına yönlendiriliyor');
         router.push('/login');
       } else if (isAuthenticated && isPublicRoute && pathname !== '/') {
         // kullanıcı giriş yapmış ve public route'daysa customers'a yönlendir
-        console.log('Customers sayfasına yönlendiriliyor');
         router.push('/customers');
       }
 
@@ -104,7 +94,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
 
     handleAuth();
-  }, [pathname]); // router'ı dependency'den çıkardım
+  }, [pathname]);
 
   const value = {
     user,
@@ -120,6 +110,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 }
 
+// auth hook'u
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
