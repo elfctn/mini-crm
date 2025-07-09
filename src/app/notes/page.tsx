@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Note, Customer } from '@/types';
-
+import { formatDate } from '@/lib/utils';
 import { useAuth } from '@/providers/AuthProvider';
 
 export default function NotesPage() {
@@ -320,7 +320,7 @@ export default function NotesPage() {
                         </div>
                         
                         <div className="flex justify-between items-center text-sm text-gray-500">
-                          <span>Oluşturulma: {typeof note.createdAt === 'string' ? note.createdAt : new Date(note.createdAt).toLocaleString('tr-TR')}</span>
+                          <span>Oluşturulma: {formatDate(note.createdAt)}</span>
                           <Link
                             href={`/customers/${note.customerId}`}
                             className="text-blue-600 hover:text-blue-800"

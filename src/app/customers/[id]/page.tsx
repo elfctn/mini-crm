@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Customer, CustomerInput, Note } from '@/types';
+import { formatDate } from '@/lib/utils';
 
 
 export default function EditCustomerPage({ params }: { params: { id: string } }) {
@@ -487,8 +488,8 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
                       ) : (
                         <div>
                           <p className="text-gray-900 mb-2">{note.content}</p>
-                                                     <div className="flex justify-between items-center text-sm text-gray-500">
-                             <span>{typeof note.createdAt === 'string' ? note.createdAt : new Date(note.createdAt).toLocaleString('tr-TR')}</span>
+                                                                               <div className="flex justify-between items-center text-sm text-gray-500">
+                            <span>{formatDate(note.createdAt)}</span>
                             <div className="flex space-x-2">
                               <button
                                 onClick={() => {
