@@ -36,8 +36,8 @@ export async function GET(request: NextRequest) {
       content: note.content,
       customerId: note.customer_id.toString(),
       userId: note.user_id.toString(),
-      createdAt: note.created_at,
-      updatedAt: note.updated_at
+      createdAt: new Date(note.created_at).toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul' }),
+      updatedAt: new Date(note.updated_at).toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul' })
     }));
 
     return Response.json({
@@ -84,13 +84,14 @@ export async function POST(request: NextRequest) {
       [content.trim(), customerId, user._id]
     );
 
+    const now = new Date();
     const newNote = {
       _id: result.lastID.toString(),
       content: content.trim(),
       customerId,
       userId: user._id,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
+      createdAt: now.toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul' }),
+      updatedAt: now.toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul' })
     };
 
     return Response.json({

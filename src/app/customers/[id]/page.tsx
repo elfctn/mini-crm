@@ -528,7 +528,7 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
                         <div>
                           <div className="flex justify-between items-start mb-2">
                             <p className="text-sm text-gray-600">
-                              {new Date(note.createdAt).toLocaleString('tr-TR')}
+                              {typeof note.createdAt === 'string' ? note.createdAt : new Date(note.createdAt).toLocaleString('tr-TR')}
                             </p>
                             <div className="flex space-x-2">
                               <button

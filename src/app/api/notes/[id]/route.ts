@@ -40,13 +40,14 @@ export async function PUT(
     );
 
     //frontende gönderilecek veri
+    const now = new Date();
     const updatedNote = {
       _id: id,
       content: content.trim(),
       customerId: existingNote.customer_id.toString(),
       userId: user._id,
       createdAt: existingNote.created_at,
-      updatedAt: new Date().toISOString()
+      updatedAt: now.toLocaleString('tr-TR', { timeZone: 'Europe/Istanbul' })
     };
 
     return Response.json({
