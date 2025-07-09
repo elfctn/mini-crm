@@ -220,9 +220,7 @@ Geliştirme sırasında console loglarını aktif tutun:
 - AuthProvider'da token kontrol logları
 - Database işlemlerinde debug bilgileri
 
-## 📄 Lisans
 
-Bu proje MIT lisansı altında lisanslanmıştır.
 
 ## 🤝 Katkıda Bulunma
 
@@ -236,9 +234,9 @@ Bu proje MIT lisansı altında lisanslanmıştır.
 
 Proje ile ilgili sorularınız için:
 - GitHub Issues kullanın
-- Email: [your-email@example.com]
+- Email: [elifcetin.dev@gmail.com]
 
 ---
 
-**Not**: Bu proje eğitim amaçlı geliştirilmiştir. Production kullanımı için güvenlik önlemlerini artırmanız önerilir.
+**Not**: Bu proje görev-case amaçlı geliştirilmiştir. Production kullanımı için güvenlik önlemlerini artırmanız önerilir.
 
