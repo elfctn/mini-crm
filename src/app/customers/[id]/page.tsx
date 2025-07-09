@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Customer, CustomerInput, Note } from '@/types';
-import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { ProtectedRoute } from '@/providers/ProtectedRoute';
 
 export default function EditCustomerPage({ params }: { params: { id: string } }) {
   const router = useRouter();

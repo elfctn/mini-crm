@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Customer } from '@/types';
-import { ProtectedRoute } from '@/components/ProtectedRoute';
-import { useAuth } from '@/components/AuthProvider';
+import { ProtectedRoute } from '@/providers/ProtectedRoute';
+import { useAuth } from '@/providers/AuthProvider';
 
 export default function CustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([]);

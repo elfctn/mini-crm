@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { CustomerInput } from '@/types';
-import { ProtectedRoute } from '@/components/ProtectedRoute';
+import { ProtectedRoute } from '@/providers/ProtectedRoute';
 
 export default function NewCustomerPage() {
   const router = useRouter();

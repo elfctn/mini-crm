@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { RegisterForm } from '@/types';
-import { useAuth } from '@/components/AuthProvider';
+import { useAuth } from '@/providers/AuthProvider';
 
 export default function RegisterPage() {
   const router = useRouter();

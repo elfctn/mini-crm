@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { LoginForm } from '@/types';
-import { useAuth } from '@/components/AuthProvider';
+import { useAuth } from '@/providers/AuthProvider';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -150,25 +150,47 @@ export default function LoginPage() {
             </div>
           </form>
 
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
+                      <div className="mt-6">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-gray-300" />
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-white text-gray-500">Demo hesap</span>
+                </div>
               </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Hesabınız yok mu?</span>
-              </div>
-            </div>
 
-            <div className="mt-6">
-              <Link
-                href="/register"
-                className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
-              >
-                Yeni Hesap Oluştur
-              </Link>
+              <div className="mt-6">
+                <div className="bg-gray-50 p-4 rounded-md">
+                  <p className="text-sm text-gray-600 mb-2">
+                    <strong>E-posta:</strong> admin@minicrm.com
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    <strong>Şifre:</strong> admin123
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <div className="relative">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-gray-300" />
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="px-2 bg-white text-gray-500">Hesabınız yok mu?</span>
+                  </div>
+                </div>
+
+                <div className="mt-6">
+                  <Link
+                    href="/register"
+                    className="w-full flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 transition-colors"
+                  >
+                    Yeni Hesap Oluştur
+                  </Link>
+                </div>
+              </div>
             </div>
-          </div>
         </div>
       </div>
     </div>
