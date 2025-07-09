@@ -184,12 +184,7 @@ her isteğin açıklaması ve örnek body'leri koleksiyonda mevcut
 4. push edin (`git push origin feature/amazing-feature`)
 5. pull request oluşturun
 
-## 📄 lisans
+## 📄 Proje Sahibi
+ELIF CETIN
 
-bu proje mit lisansı altında lisanslanmıştır.
 
-## 📞 iletişim
-
-proje sahibi - [@your-twitter](https://twitter.com/your-twitter)
-
-proje linki: [https://github.com/your-username/mini-crm](https://github.com/your-username/mini-crm)
