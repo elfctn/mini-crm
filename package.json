@@ -9,7 +9,8 @@
     "start": "next start",
     "lint": "next lint",
     "seed": "tsx src/lib/seed-mongodb.ts",
-    "test": "jest"
+    "test": "jest",
+    "pdf": "node generate-pdf.js"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -18,8 +19,10 @@
     "bcryptjs": "^3.0.2",
     "dotenv": "^17.2.0",
     "jsonwebtoken": "^9.0.2",
+    "markdown-it": "^14.1.0",
     "mongoose": "^8.16.2",
     "next": "^14.2.30",
+    "puppeteer": "^24.12.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },

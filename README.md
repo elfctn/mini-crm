@@ -166,7 +166,7 @@ npm run test:coverage
 #### Test Özellikleri
 
 - **İzole Testler**: Her test MongoDB Memory Server kullanarak izole ortamda çalışır
-- **Açıklamalı Testler**: Her test küçük harfli, açıklayıcı yorumlarla başlar
+- **Açıklamalı Testler**: Her test açıklayıcı yorumlarla başlar
 - **Kapsamlı Kapsam**: Tüm API endpointleri ve hata durumları test edilir
 - **Otomatik Temizlik**: Her test sonrası veritabanı otomatik temizlenir
 
@@ -198,6 +198,35 @@ Proje React bileşenleri için de testler içerir:
   - AuthProvider render testleri
   - Component wrapper testleri
   - Next.js router mock testleri
+
+## 📄 Dokümantasyon
+
+### Proje Özeti PDF'i
+
+Proje geliştirme sürecini, teknoloji seçimlerini ve öğrenilen dersleri içeren kapsamlı bir PDF dokümantasyonu oluşturabilirsiniz:
+
+```bash
+# PDF oluştur
+npm run pdf
+```
+
+Bu komut `PROJE_OZETI.md` dosyasını okuyarak `Mini_CRM_Proje_Ozeti.pdf` dosyasını oluşturur.
+
+#### PDF İçeriği
+- Proje özeti ve temel özellikler
+- Teknoloji seçimleri ve nedenleri
+- Proje yapısı ve mimari
+- Güvenlik önlemleri
+- Geliştirme süreci adımları
+- Test stratejisi
+- Gelecek planları
+- Öğrenilen dersler
+
+#### PDF Güncelleme
+PDF'i güncellemek için:
+1. `PROJE_OZETI.md` dosyasını düzenleyin
+2. `npm run pdf` komutunu çalıştırın
+3. Yeni PDF otomatik olarak oluşturulur
 
 #### Frontend Test Özellikleri
 
