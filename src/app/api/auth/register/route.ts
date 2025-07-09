@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import bcrypt from 'bcryptjs';
-import { dbGet, dbRun, dbAll, initDatabase } from '@/lib/sqlite';
+import { connectToDatabase } from '@/lib/mongodb';
+import User from '@/lib/models/User';
 import { generateToken } from '@/lib/jwt';
 import { createAuthResponse, createErrorResponse } from '@/lib/auth';
 import { RegisterForm } from '@/types';
@@ -8,8 +9,8 @@ import { RegisterForm } from '@/types';
 // kullanıcı kayıt endpoint'i
 export async function POST(request: NextRequest) {
   try {
-    // veritabanını başlat
-    await initDatabase();
+    // mongodb bağlantısını başlat
+    await connectToDatabase();
     
     const body: RegisterForm = await request.json();
     const { name, email, password } = body;
@@ -30,7 +31,7 @@ export async function POST(request: NextRequest) {
     }
 
     // kullanıcının zaten var olup olmadığını kontrol et
-    const existingUser = await dbGet('SELECT * FROM users WHERE email = ?', [email]);
+    const existingUser = await User.findOne({ email });
     if (existingUser) {
       return createErrorResponse('bu e-posta adresi zaten kullanılıyor', 400);
     }
@@ -38,19 +39,20 @@ export async function POST(request: NextRequest) {
     // şifreyi hashle
     const hashedPassword = await bcrypt.hash(password, 12);
 
-    // yeni kullanıcıyı veritabanına ekle
-    const result: any = await dbRun(
-      'INSERT INTO users (name, email, password) VALUES (?, ?, ?)',
-      [name, email, hashedPassword]
-    );
+    // yeni kullanıcıyı oluştur
+    const newUser = await User.create({
+      name,
+      email,
+      password: hashedPassword
+    });
 
     // token oluştur
     const userForToken = {
-      _id: result.lastID.toString(),
-      email,
-      name,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      _id: newUser._id.toString(),
+      email: newUser.email,
+      name: newUser.name,
+      createdAt: newUser.createdAt,
+      updatedAt: newUser.updatedAt
     };
     const token = generateToken(userForToken);
 

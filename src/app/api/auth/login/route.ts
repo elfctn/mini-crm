@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import bcrypt from 'bcryptjs';
-import { dbGet, dbRun, dbAll, initDatabase } from '@/lib/sqlite';
+import { connectToDatabase } from '@/lib/mongodb';
+import User from '@/lib/models/User';
 import { generateToken } from '@/lib/jwt';
 import { createAuthResponse, createErrorResponse } from '@/lib/auth';
 import { LoginForm } from '@/types';
@@ -8,8 +9,8 @@ import { LoginForm } from '@/types';
 // kullanıcı giriş endpoint'i
 export async function POST(request: NextRequest) {
   try {
-    // veritabanını başlat
-    await initDatabase();
+    // mongodb bağlantısını başlat
+    await connectToDatabase();
     
     const body: LoginForm = await request.json();
     const { email, password } = body;
@@ -20,7 +21,7 @@ export async function POST(request: NextRequest) {
     }
 
     // kullanıcıyı bul
-    const user: any = await dbGet('SELECT * FROM users WHERE email = ?', [email]);
+    const user = await User.findOne({ email });
     if (!user) {
       return createErrorResponse('geçersiz e-posta veya şifre', 401);
     }
@@ -33,11 +34,11 @@ export async function POST(request: NextRequest) {
 
     // token oluştur
     const userForToken = {
-      _id: user.id.toString(),
+      _id: user._id.toString(),
       email: user.email,
       name: user.name,
-      createdAt: new Date(user.created_at),
-      updatedAt: new Date(user.updated_at)
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt
     };
     const token = generateToken(userForToken);
 

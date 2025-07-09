@@ -1,7 +1,10 @@
 import { NextRequest } from 'next/server';
-import { dbGet, dbRun, dbAll, initDatabase } from '@/lib/sqlite';
+import { connectToDatabase } from '@/lib/mongodb';
+import Customer from '@/lib/models/Customer';
+import Note from '@/lib/models/Note';
 import { authenticateUser, createErrorResponse } from '@/lib/auth';
 import { CustomerInput } from '@/types';
+import mongoose from 'mongoose';
 
 // tek müşteri detayı endpoint'i
 export async function GET(
@@ -9,54 +12,39 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    // veritabanını başlat
-    await initDatabase();
-    
-    // kullanıcıyı doğrula
+    await connectToDatabase();
     const user = await authenticateUser(request);
     const customerId = params.id;
-
     // müşteriyi bul
-    const customer: any = await dbGet(
-      'SELECT * FROM customers WHERE id = ? AND user_id = ?',
-      [customerId, user._id]
-    );
-
+    const customer = await Customer.findOne({ _id: customerId, userId: user._id });
     if (!customer) {
       return createErrorResponse('müşteri bulunamadı', 404);
     }
-
     // müşteri notlarını getir
-    const notes: any = await dbAll(
-      'SELECT * FROM notes WHERE customer_id = ? AND user_id = ? ORDER BY created_at DESC',
-      [customerId, user._id]
-    );
-
+    const notes = await Note.find({ customerId: customerId, userId: user._id }).sort({ createdAt: -1 });
     // yanıtı formatla
     const formattedCustomer = {
-      _id: customer.id.toString(),
+      _id: customer._id.toString(),
       name: customer.name,
       email: customer.email,
       phone: customer.phone,
-      tags: customer.tags ? JSON.parse(customer.tags) : [],
-      userId: customer.user_id.toString(),
-      createdAt: customer.created_at,
-      updatedAt: customer.updated_at,
+      tags: customer.tags || [],
+      userId: customer.userId.toString(),
+      createdAt: customer.createdAt,
+      updatedAt: customer.updatedAt,
       notes: notes.map((note: any) => ({
-        _id: note.id.toString(),
+        _id: note._id.toString(),
         content: note.content,
-        customerId: note.customer_id.toString(),
-        userId: note.user_id.toString(),
-        createdAt: note.created_at,
-        updatedAt: note.updated_at
+        customerId: note.customerId.toString(),
+        userId: note.userId.toString(),
+        createdAt: note.createdAt,
+        updatedAt: note.updatedAt
       }))
     };
-
     return Response.json({
       success: true,
       data: formattedCustomer
     });
-
   } catch (error) {
     console.error('müşteri detay hatası:', error);
     return createErrorResponse('müşteri detayı alınamadı', 500);
@@ -69,70 +57,46 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    // veritabanını başlat
-    await initDatabase();
-    
-    // kullanıcıyı doğrula
+    await connectToDatabase();
     const user = await authenticateUser(request);
     const customerId = params.id;
-
     const body: CustomerInput = await request.json();
     const { name, email, phone, tags } = body;
-
-    // doğrulama
     if (!name || !email || !phone) {
       return createErrorResponse('ad, e-posta ve telefon gereklidir', 400);
     }
-
     // müşterinin var olup olmadığını kontrol et
-    const existingCustomer: any = await dbGet(
-      'SELECT * FROM customers WHERE id = ? AND user_id = ?',
-      [customerId, user._id]
-    );
-
+    const existingCustomer = await Customer.findOne({ _id: customerId, userId: user._id });
     if (!existingCustomer) {
       return createErrorResponse('müşteri bulunamadı', 404);
     }
-
     // aynı email ile başka müşteri var mı kontrol et
-    const duplicateEmail: any = await dbGet(
-      'SELECT * FROM customers WHERE email = ? AND user_id = ? AND id != ?',
-      [email, user._id, customerId]
-    );
-
+    const duplicateEmail = await Customer.findOne({ email, userId: user._id, _id: { $ne: customerId } });
     if (duplicateEmail) {
       return createErrorResponse('bu e-posta adresi ile başka bir müşteri zaten mevcut', 400);
     }
-
     // müşteriyi güncelle
-    await dbRun(
-      'UPDATE customers SET name = ?, email = ?, phone = ?, tags = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND user_id = ?',
-      [name, email, phone, JSON.stringify(tags || []), customerId, user._id]
+    await Customer.updateOne(
+      { _id: customerId, userId: user._id },
+      { $set: { name, email, phone, tags: tags || [], updatedAt: new Date() } }
     );
-
     // güncellenmiş müşteriyi getir
-    const updatedCustomer: any = await dbGet(
-      'SELECT * FROM customers WHERE id = ? AND user_id = ?',
-      [customerId, user._id]
-    );
-
+    const updatedCustomer = await Customer.findOne({ _id: customerId, userId: user._id });
     const formattedCustomer = {
-      _id: updatedCustomer.id.toString(),
+      _id: updatedCustomer._id.toString(),
       name: updatedCustomer.name,
       email: updatedCustomer.email,
       phone: updatedCustomer.phone,
-      tags: updatedCustomer.tags ? JSON.parse(updatedCustomer.tags) : [],
-      userId: updatedCustomer.user_id.toString(),
-      createdAt: updatedCustomer.created_at,
-      updatedAt: updatedCustomer.updated_at
+      tags: updatedCustomer.tags || [],
+      userId: updatedCustomer.userId.toString(),
+      createdAt: updatedCustomer.createdAt,
+      updatedAt: updatedCustomer.updatedAt
     };
-
     return Response.json({
       success: true,
       data: formattedCustomer,
       message: 'müşteri başarıyla güncellendi'
     });
-
   } catch (error) {
     console.error('müşteri güncelleme hatası:', error);
     return createErrorResponse('müşteri güncellenemedi', 500);
@@ -145,40 +109,22 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
-    // veritabanını başlat
-    await initDatabase();
-    
-    // kullanıcıyı doğrula
+    await connectToDatabase();
     const user = await authenticateUser(request);
     const customerId = params.id;
-
     // müşterinin var olup olmadığını kontrol et
-    const existingCustomer: any = await dbGet(
-      'SELECT * FROM customers WHERE id = ? AND user_id = ?',
-      [customerId, user._id]
-    );
-
+    const existingCustomer = await Customer.findOne({ _id: customerId, userId: user._id });
     if (!existingCustomer) {
       return createErrorResponse('müşteri bulunamadı', 404);
     }
-
     // önce müşterinin notlarını sil
-    await dbRun(
-      'DELETE FROM notes WHERE customer_id = ? AND user_id = ?',
-      [customerId, user._id]
-    );
-
+    await Note.deleteMany({ customerId: customerId, userId: user._id });
     // sonra müşteriyi sil
-    await dbRun(
-      'DELETE FROM customers WHERE id = ? AND user_id = ?',
-      [customerId, user._id]
-    );
-
+    await Customer.deleteOne({ _id: customerId, userId: user._id });
     return Response.json({
       success: true,
       message: 'müşteri başarıyla silindi'
     });
-
   } catch (error) {
     console.error('müşteri silme hatası:', error);
     return createErrorResponse('müşteri silinemedi', 500);

@@ -1,6 +1,6 @@
 # Mini CRM - Müşteri Takip Uygulaması
 
-Küçük işletmeler için basit ve etkili müşteri takip sistemi. Next.js 14, SQLite, JWT authentication ve TailwindCSS ile geliştirilmiştir.
+Küçük işletmeler için basit ve etkili müşteri takip sistemi. Next.js 14, MongoDB Atlas, Mongoose, JWT authentication ve TailwindCSS ile geliştirilmiştir.
 
 ## 🚀 Özellikler
 
@@ -16,7 +16,7 @@ Küçük işletmeler için basit ve etkili müşteri takip sistemi. Next.js 14, 
 - **Frontend**: Next.js 14, React 18, TypeScript
 - **Styling**: TailwindCSS
 - **Backend**: Next.js API Routes
-- **Veritabanı**: SQLite
+- **Veritabanı**: MongoDB Atlas, Mongoose
 - **Authentication**: JWT (JSON Web Tokens)
 - **Password Hashing**: bcryptjs
 - **Deployment**: Vercel (önerilen)
@@ -58,8 +58,8 @@ JWT_SECRET=your-super-secret-jwt-key-here-change-this-in-production
 # nextauth secret (opsiyonel)
 NEXTAUTH_SECRET=your-nextauth-secret-key
 
-# veritabanı ayarları (opsiyonel)
-DATABASE_URL=./mini-crm.db
+# mongodb atlas connection string
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/mini-crm?retryWrites=true&w=majority
 
 # canlı ortam ayarları
 NODE_ENV=production
@@ -115,6 +115,7 @@ Uygulama ilk çalıştırıldığında otomatik olarak demo hesap oluşturulur:
    - Aşağıdaki değişkenleri ekleyin:
      ```
      JWT_SECRET=your-production-jwt-secret-key
+     MONGODB_URI=your-mongodb-atlas-connection-string
      NODE_ENV=production
      ```
 
@@ -122,22 +123,6 @@ Uygulama ilk çalıştırıldığında otomatik olarak demo hesap oluşturulur:
    ```bash
    vercel --prod
    ```
-
-### Canlı Ortam Sorunları ve Çözümleri
-
-#### ✅ Çözülen Sorunlar:
-- **Veritabanı Başlatma**: Tüm API route'larda otomatik veritabanı başlatma
-- **JWT Secret**: Fallback değerler ve güvenli token yönetimi
-- **Authentication Flow**: Geliştirilmiş token kontrolü ve redirect'ler
-- **Error Handling**: Detaylı hata yönetimi ve loglama
-- **Database Path**: Canlı ortam için doğru dosya yolu ayarları
-
-#### 🔧 Teknik İyileştirmeler:
-- Her API çağrısında veritabanı bağlantısı kontrolü
-- JWT token süre kontrolü (client-side)
-- Geliştirilmiş error logging
-- Production-ready database initialization
-- Secure fallback JWT secrets
 
 ## 🧪 Test
 
@@ -182,13 +167,13 @@ mini-crm/
 │   ├── lib/               # Utility functions
 │   │   ├── auth.ts        # Authentication helpers
 │   │   ├── jwt.ts         # JWT utilities
-│   │   ├── sqlite.ts      # Database connection
-│   │   └── seed-sqlite.ts # Database seeding
+│   │   ├── mongodb.ts     # MongoDB connection
+│   │   ├── models/        # Mongoose modelleri
+│   │   └── seed-mongodb.ts# MongoDB seed script
 │   ├── providers/         # React context providers
 │   │   └── AuthProvider.tsx
 │   └── types/             # TypeScript type definitions
 ├── public/                # Static assets
-├── mini-crm.db           # SQLite database
 └── README.md
 ```
 
@@ -200,8 +185,6 @@ mini-crm/
    ```typescript
    // src/app/api/feature/route.ts
    export async function GET(request: NextRequest) {
-     await initDatabase();
-     const user = await authenticateUser(request);
      // ... implementation
    }
    ```
@@ -214,19 +197,13 @@ mini-crm/
    // ... implementation
    ```
 
-### Database Schema Değişiklikleri
-
-1. `src/lib/sqlite.ts` dosyasında tablo yapısını güncelleyin
-2. Migration script'i yazın (gerekirse)
-3. Seed data'yı güncelleyin
-
 ## 🐛 Sorun Giderme
 
 ### Yaygın Sorunlar
 
 1. **"Database connection failed" Hatası**
-   - Veritabanı dosyasının yazma izinlerini kontrol edin
-   - `mini-crm.db` dosyasının varlığını kontrol edin
+   - MONGODB_URI environment variable'ını kontrol edin
+   - MongoDB Atlas bağlantı izinlerini kontrol edin
 
 2. **"Authentication failed" Hatası**
    - JWT_SECRET environment variable'ını kontrol edin
