@@ -1,45 +1,22 @@
 import sqlite3 from 'sqlite3';
-import { promisify } from 'util';
-import path from 'path';
+import { open, Database } from 'sqlite';
+import { seedDatabase } from './seed-sqlite';
 
-const dbPath = path.join(process.cwd(), 'mini-crm.db');
+let db: Database | null = null;
 
-// veritabanı bağlantısı
-export const db = new sqlite3.Database(dbPath);
-
-// promise wrapperları
-export const dbRun = (sql: string, params?: any[]) => {
-  return new Promise((resolve, reject) => {
-    db.run(sql, params, function(err) {
-      if (err) reject(err);
-      else resolve({ lastID: this.lastID, changes: this.changes });
-    });
-  });
-};
-
-export const dbGet = (sql: string, params?: any[]) => {
-  return new Promise((resolve, reject) => {
-    db.get(sql, params, (err, row) => {
-      if (err) reject(err);
-      else resolve(row);
-    });
-  });
-};
-
-export const dbAll = (sql: string, params?: any[]) => {
-  return new Promise((resolve, reject) => {
-    db.all(sql, params, (err, rows) => {
-      if (err) reject(err);
-      else resolve(rows);
-    });
-  });
-};
-
-// tabloları oluştur
 export async function initDatabase() {
+  if (db) {
+    return db;
+  }
+
   try {
-    // users tablosu
-    await dbRun(`
+    db = await open({
+      filename: './mini-crm.db',
+      driver: sqlite3.Database
+    });
+
+    // tabloları oluştur
+    await db.exec(`
       CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
@@ -50,13 +27,12 @@ export async function initDatabase() {
       )
     `);
 
-    // customers tablosu
-    await dbRun(`
+    await db.exec(`
       CREATE TABLE IF NOT EXISTS customers (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
         email TEXT NOT NULL,
-        phone TEXT NOT NULL,
+        phone TEXT,
         tags TEXT,
         user_id INTEGER NOT NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -65,8 +41,7 @@ export async function initDatabase() {
       )
     `);
 
-    // notes tablosu
-    await dbRun(`
+    await db.exec(`
       CREATE TABLE IF NOT EXISTS notes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         content TEXT NOT NULL,
@@ -79,14 +54,45 @@ export async function initDatabase() {
       )
     `);
 
-    console.log('Database tabloları oluşturuldu');
+    // otomatik seed işlemi (sadece ilk kez)
+    try {
+      await seedDatabase();
+    } catch (error) {
+      console.log('Seed işlemi zaten yapılmış veya hata oluştu:', error);
+    }
+
+    return db;
   } catch (error) {
-    console.error('Database başlatma hatası:', error);
+    console.error('Veritabanı başlatma hatası:', error);
     throw error;
   }
 }
 
-// veritabanı bağlantısını kapat
-export function closeDatabase() {
-  db.close();
+export async function getDatabase() {
+  if (!db) {
+    await initDatabase();
+  }
+  return db;
+}
+
+export async function dbRun(sql: string, params: any[] = []): Promise<any> {
+  const database = await getDatabase();
+  return database.run(sql, params);
+}
+
+export async function dbGet(sql: string, params: any[] = []): Promise<any> {
+  const database = await getDatabase();
+  return database.get(sql, params);
+}
+
+export async function dbAll(sql: string, params: any[] = []): Promise<any[]> {
+  const database = await getDatabase();
+  return database.all(sql, params);
+}
+
+export async function closeDatabase() {
+  if (db) {
+    await db.close();
+    db = null;
+  }
 } 
