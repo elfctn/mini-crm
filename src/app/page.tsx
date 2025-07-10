@@ -48,9 +48,6 @@ export default function Home() {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 space-y-4 sm:space-y-0">
             <div className="flex items-center space-x-3">
               <div className="flex-shrink-0">
-                <img src="/logo.png" alt="Mini CRM Logo" className="w-12 h-12" />
-              </div>
-              <div className="flex-shrink-0">
                 <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">Mini CRM</h1>
               </div>
             </div>
@@ -144,6 +141,19 @@ export default function Home() {
                 Müşterilerinizi isim, etiket veya diğer kriterlere göre hızlıca bulun.
               </p>
             </div>
+
+            {/* Feature 4*/}
+            <div className="bg-white/80 backdrop-blur-sm rounded-xl shadow-lg p-6 border border-emerald-100 hover:shadow-xl transition-all duration-300">
+              <div className="w-12 h-12 bg-gradient-to-br from-emerald-100 to-blue-100 rounded-xl flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </div>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Profil Güncelleme</h3>
+              <p className="text-gray-600">
+                Şifre, fotoğraf ve bilgilerinizi güncelleyin.
+              </p>
+            </div>
           </div>
         </div>
 
@@ -172,7 +182,6 @@ export default function Home() {
         <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="flex items-center justify-center space-x-3 mb-4">
-              <img src="/logo.png" alt="Mini CRM Logo" className="w-10 h-10" />
               <h3 className="text-lg font-semibold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">Mini CRM</h3>
             </div>
             <p className="mt-2 text-gray-600">

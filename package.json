@@ -9,8 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "seed": "tsx src/lib/seed-mongodb.ts",
-    "test": "jest",
-    "pdf": "node generate-pdf.js"
+    "test": "jest"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",
@@ -24,12 +23,14 @@
     "mongoose": "^8.16.2",
     "multer": "^2.0.1",
     "next": "^14.2.30",
-    "puppeteer": "^24.12.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@next/bundle-analyzer": "^15.3.5",
+    "@swc/core": "^1.12.11",
+    "@swc/jest": "^0.2.39",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",

@@ -6,14 +6,20 @@ import { AuthProvider } from "@/providers/AuthProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'),
   title: "Mini CRM - Müşteri Takip Uygulaması",
   description: "Küçük işletmeler için basit ve etkili müşteri takip sistemi",
   keywords: ["CRM", "müşteri takip", "lead management", "business"],
   authors: [{ name: "Elif Cetin - Mini CRM Team" }],
   viewport: "width=device-width, initial-scale=1",
-  icons: {
-    icon: '/logo.png',
-    apple: '/logo.png',
+  openGraph: {
+    title: "Mini CRM - Müşteri Takip Uygulaması",
+    description: "Küçük işletmeler için basit ve etkili müşteri takip sistemi",
+  },
+  twitter: {
+    card: 'summary',
+    title: "Mini CRM - Müşteri Takip Uygulaması",
+    description: "Küçük işletmeler için basit ve etkili müşteri takip sistemi",
   },
 };
 

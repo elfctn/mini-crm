@@ -159,8 +159,7 @@ export default function NotesPage() {
         <header className="bg-white/90 backdrop-blur-sm shadow border-b border-blue-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 space-y-4 sm:space-y-0">
-                          <div className="flex items-center space-x-3">
-              <img src="/logo.png" alt="Mini CRM Logo" className="w-10 h-10" />
+              <div className="flex items-center space-x-3">
                 <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">Mini CRM</h1>
               </div>
               <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
