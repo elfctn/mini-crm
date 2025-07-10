@@ -112,27 +112,35 @@ function CustomersContent({
       {/* Header */}
       <header className="bg-white shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 space-y-4 sm:space-y-0">
             <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900">Mini CRM</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Mini CRM</h1>
             </div>
-            <div className="flex items-center space-x-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
               {user && (
-                <div className="flex items-center space-x-3">
-                  <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full">
-                    <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
+                <Link href="/profile" className="flex items-center space-x-3 hover:bg-gray-50 p-2 rounded-md transition-colors">
+                  <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full overflow-hidden">
+                    {user.avatar ? (
+                      <img
+                        src={user.avatar}
+                        alt="Profil fotoğrafı"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                      </svg>
+                    )}
                   </div>
                   <div className="text-sm">
                     <p className="text-gray-900 font-medium">{user.name || user.email}</p>
                     <p className="text-gray-500 text-xs">{user.email}</p>
                   </div>
-                </div>
+                </Link>
               )}
               <button
                 onClick={handleLogout}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors w-full sm:w-auto"
               >
                 Çıkış Yap
               </button>
@@ -144,23 +152,23 @@ function CustomersContent({
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         {/* Page Header */}
         <div className="px-4 py-6 sm:px-0">
-                      <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Müşteriler</h2>
-              <div className="flex space-x-3">
-                <Link
-                  href="/notes"
-                  className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
-                >
-                  Tüm Notlar
-                </Link>
-                <Link
-                  href="/customers/new"
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
-                >
-                  Yeni Müşteri Ekle
-                </Link>
-              </div>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Müşteriler</h2>
+            <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
+              <Link
+                href="/notes"
+                className="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors text-center"
+              >
+                Tüm Notlar
+              </Link>
+              <Link
+                href="/customers/new"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors text-center"
+              >
+                Yeni Müşteri Ekle
+              </Link>
             </div>
+          </div>
 
           {/* Search and Filters */}
           <div className="mb-6 space-y-4">
@@ -229,11 +237,11 @@ function CustomersContent({
               </div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {filteredCustomers.map((customer) => (
                 <div key={customer._id} className="bg-white overflow-hidden shadow rounded-lg">
                   <div className="px-4 py-5 sm:p-6">
-                    <div className="flex items-center justify-between mb-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-2 sm:space-y-0">
                       <h3 className="text-lg font-medium text-gray-900 truncate">
                         {customer.name}
                       </h3>
@@ -249,17 +257,17 @@ function CustomersContent({
                     
                     <div className="space-y-2">
                       <div className="flex items-center text-sm text-gray-600">
-                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                         </svg>
-                        {customer.email}
+                        <span className="truncate">{customer.email}</span>
                       </div>
                       
                       <div className="flex items-center text-sm text-gray-600">
-                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                         </svg>
-                        {customer.phone}
+                        <span className="truncate">{customer.phone}</span>
                       </div>
                     </div>
 

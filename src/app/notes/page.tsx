@@ -158,33 +158,41 @@ export default function NotesPage() {
         {/* Header */}
         <header className="bg-white shadow">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center py-6">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 space-y-4 sm:space-y-0">
               <div className="flex items-center">
-                <h1 className="text-2xl font-bold text-gray-900">Mini CRM</h1>
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Mini CRM</h1>
               </div>
-              <div className="flex items-center space-x-4">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
                 <Link
                   href="/customers"
-                  className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"
+                  className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium transition-colors text-center"
                 >
                   Müşteriler
                 </Link>
                 {user && (
-                  <div className="flex items-center space-x-3">
-                    <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full">
-                      <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                      </svg>
+                  <Link href="/profile" className="flex items-center space-x-3 hover:bg-gray-50 p-2 rounded-md transition-colors">
+                    <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full overflow-hidden">
+                      {user.avatar ? (
+                        <img
+                          src={user.avatar}
+                          alt="Profil fotoğrafı"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                        </svg>
+                      )}
                     </div>
                     <div className="text-sm">
                       <p className="text-gray-900 font-medium">{user.name || user.email}</p>
                       <p className="text-gray-500 text-xs">{user.email}</p>
                     </div>
-                  </div>
+                  </Link>
                 )}
                 <button
                   onClick={handleLogout}
-                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors w-full sm:w-auto"
                 >
                   Çıkış Yap
                 </button>
@@ -196,11 +204,11 @@ export default function NotesPage() {
         <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
           {/* Page Header */}
           <div className="px-4 py-6 sm:px-0">
-            <div className="flex justify-between items-center mb-6">
-              <h2 className="text-2xl font-bold text-gray-900">Tüm Notlar</h2>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Tüm Notlar</h2>
               <Link
                 href="/customers"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors text-center w-full sm:w-auto"
               >
                 Müşterilere Dön
               </Link>
