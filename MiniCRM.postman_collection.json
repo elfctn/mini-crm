@@ -46,6 +46,71 @@
             },
             "description": "kullanıcı girişi yapar ve jwt token döner"
           }
+        },
+        {
+          "name": "profil güncelle (update profile)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Güncellenmiş Kullanıcı\",\n  \"email\": \"guncellenmis@example.com\",\n  \"phone\": \"+905551234567\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/profile",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "profile"]
+            },
+            "description": "kullanıcı profil bilgilerini günceller. jwt token gerektirir."
+          }
+        },
+        {
+          "name": "şifre değiştir (change password)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currentPassword\": \"admin123\",\n  \"newPassword\": \"yeniSifre123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/password",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "password"]
+            },
+            "description": "kullanıcı şifresini değiştirir. jwt token gerektirir."
+          }
+        },
+        {
+          "name": "avatar yükle (upload avatar)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "avatar",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/avatar",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "avatar"]
+            },
+            "description": "kullanıcı profil fotoğrafı yükler. jwt token gerektirir. FormData ile dosya gönderilir."
+          }
         }
       ]
     },

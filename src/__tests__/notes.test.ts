@@ -5,6 +5,7 @@ import { POST as loginHandler } from '../app/api/auth/login/route';
 import { POST as addCustomer } from '../app/api/customers/route';
 import { POST as addNote, GET as listNotes } from '../app/api/notes/route';
 import { PUT as updateNote, DELETE as deleteNote } from '../app/api/notes/[id]/route';
+import { GET as listAllNotes } from '../app/api/notes/all/route';
 import { NextRequest } from 'next/server';
 
 function mockRequest(body: any, token?: string) {
@@ -72,6 +73,19 @@ describe('notes api', () => {
     expect(Array.isArray(data.data)).toBe(true);
     expect(data.data.length).toBeGreaterThan(0);
     expect(data.data[0].customerId).toBe(customerId);
+  });
+
+  // bu testte tüm notlar listeleniyor mu kontrol ediyoruz
+  it('tüm notlar listeleniyor mu?', async () => {
+    const req = mockGetRequest('http://localhost/api/notes/all', token);
+    const res: any = await listAllNotes(req);
+    const data = await res.json();
+    expect(res.status).toBe(200);
+    expect(data.success).toBe(true);
+    expect(Array.isArray(data.data)).toBe(true);
+    expect(data.data.length).toBeGreaterThan(0);
+    expect(data.data[0]).toHaveProperty('customerName');
+    expect(data.data[0]).toHaveProperty('content');
   });
 
   // bu testte not güncelleniyor mu kontrol ediyoruz
