@@ -279,7 +279,7 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
         <div className="min-h-screen bg-gray-50 flex items-center justify-center">
           <div className="text-center">
             <p className="text-gray-600">Müşteri bulunamadı</p>
-            <Link href="/customers" className="text-blue-600 hover:text-blue-800 mt-2 inline-block">
+            <Link href="/customers" className="text-emerald-700 hover:text-emerald-900 mt-2 inline-block">
               Müşteri listesine dön
             </Link>
           </div>
@@ -385,7 +385,7 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
                       <button
                         type="button"
                         onClick={addTag}
-                        className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors"
+                        className="px-4 py-2 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200 border border-blue-200 transition-colors"
                       >
                         Ekle
                       </button>
@@ -395,13 +395,13 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
                         {formData.tags.map((tag, index) => (
                           <span
                             key={index}
-                            className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800"
+                            className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200"
                           >
                             {tag}
                             <button
                               type="button"
                               onClick={() => removeTag(tag)}
-                              className="ml-2 text-blue-600 hover:text-blue-800"
+                              className="ml-2 text-blue-800 hover:text-blue-900"
                             >
                               ×
                             </button>
@@ -423,7 +423,7 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
                     <button
                       type="submit"
                       disabled={saving}
-                      className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="px-4 py-2 border border-emerald-200 rounded-md shadow-sm text-sm font-medium text-emerald-700 bg-emerald-100 hover:bg-emerald-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                       {saving ? 'Kaydediliyor...' : 'Değişiklikleri Kaydet'}
                     </button>
@@ -448,7 +448,7 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
                     <button
                       onClick={addNote}
                       disabled={addingNote || !newNote.trim()}
-                      className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                      className="px-4 py-2 bg-emerald-100 text-emerald-700 rounded-md hover:bg-emerald-200 border border-emerald-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
                       {addingNote ? 'Ekleniyor...' : 'Not Ekle'}
                     </button>
@@ -479,7 +479,7 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
                             </button>
                             <button
                               onClick={() => updateNote(note._id)}
-                              className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                              className="px-3 py-1 bg-emerald-100 text-emerald-700 rounded hover:bg-emerald-200 border border-emerald-200"
                             >
                               Kaydet
                             </button>
@@ -496,7 +496,7 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
                                   setEditingNote(note._id);
                                   setEditNoteContent(note.content);
                                 }}
-                                className="text-blue-600 hover:text-blue-800"
+                                className="text-emerald-700 hover:text-emerald-900"
                               >
                                 Düzenle
                               </button>

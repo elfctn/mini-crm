@@ -11,6 +11,10 @@ export const metadata: Metadata = {
   keywords: ["CRM", "müşteri takip", "lead management", "business"],
   authors: [{ name: "Elif Cetin - Mini CRM Team" }],
   viewport: "width=device-width, initial-scale=1",
+  icons: {
+    icon: '/minicrmlogo.png',
+    apple: '/minicrmlogo.png',
+  },
 };
 
 export default function RootLayout({
