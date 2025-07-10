@@ -37,6 +37,8 @@ export async function POST(request: NextRequest) {
       _id: user._id.toString(),
       email: user.email,
       name: user.name,
+      phone: user.phone,
+      avatar: user.avatar,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt
     };
