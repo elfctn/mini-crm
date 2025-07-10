@@ -4,19 +4,20 @@ import User from '@/lib/models/User';
 import { verifyToken } from '@/lib/jwt';
 import { v2 as cloudinary } from 'cloudinary';
 
-// cloudinary konfigürasyonu
+// cloudinary konfigürasyonu - environment variable'lardan alınan bilgiler
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
+// avatar yükleme endpoint'i - profil fotoğrafı yükler ve cloudinary'de saklar
 export async function POST(request: NextRequest) {
   try {
-    // veritabanına bağlan
+    // mongodb bağlantısını başlat
     await connectToDatabase();
 
-    // token'ı doğrula
+    // authorization header'dan jwt token'ı al ve doğrula
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
@@ -25,6 +26,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // bearer token'dan jwt'yi çıkar ve doğrula
     const token = authHeader.substring(7);
     const decoded = verifyToken(token);
     
@@ -35,10 +37,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // form data'yı al
+    // form data'dan yüklenen dosyayı al
     const formData = await request.formData();
     const file = formData.get('avatar') as File;
 
+    // dosya yükleme kontrolü - dosya var mı
     if (!file) {
       return NextResponse.json(
         { success: false, error: 'Dosya yüklenmedi' },
@@ -46,7 +49,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // dosya tipini kontrol et
+    // dosya tipi kontrolü - sadece resim dosyaları kabul et
     if (!file.type.startsWith('image/')) {
       return NextResponse.json(
         { success: false, error: 'Sadece resim dosyaları yüklenebilir' },
@@ -54,7 +57,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // dosya boyutunu kontrol et (5MB)
+    // dosya boyutu kontrolü - maksimum 5MB
     if (file.size > 5 * 1024 * 1024) {
       return NextResponse.json(
         { success: false, error: 'Dosya boyutu 5MB\'dan küçük olmalıdır' },
@@ -62,18 +65,18 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // dosyayı buffer'a çevir
+    // dosyayı buffer formatına çevir - cloudinary için hazırla
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // cloudinary'ye yükle
+    // cloudinary'ye dosyayı yükle - stream ile optimize edilmiş yükleme
     const result = await new Promise((resolve, reject) => {
       cloudinary.uploader.upload_stream(
         {
-          folder: 'mini-crm-avatars',
+          folder: 'mini-crm-avatars', // özel klasör yapısı
           transformation: [
-            { width: 200, height: 200, crop: 'fill' },
-            { quality: 'auto' }
+            { width: 200, height: 200, crop: 'fill' }, // boyut standardizasyonu
+            { quality: 'auto' } // otomatik kalite optimizasyonu
           ]
         },
         (error, result) => {
@@ -83,7 +86,7 @@ export async function POST(request: NextRequest) {
       ).end(buffer);
     });
 
-    // kullanıcıyı bul ve avatar'ı güncelle
+    // kullanıcıyı veritabanında bul - token'daki userId ile
     const user = await User.findById(decoded.userId);
     if (!user) {
       return NextResponse.json(
@@ -92,7 +95,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // eski avatar'ı sil (varsa)
+    // eski avatar'ı cloudinary'den sil - storage temizliği
     if (user.avatar) {
       try {
         const publicId = user.avatar.split('/').pop()?.split('.')[0];
@@ -104,10 +107,11 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // yeni avatar'ı kaydet
+    // yeni avatar url'ini kullanıcıya kaydet ve veritabanına güncelle
     user.avatar = (result as any).secure_url;
     await user.save();
 
+    // başarılı avatar yükleme yanıtı döndür - yeni avatar url'i ile
     return NextResponse.json({
       success: true,
       data: {
@@ -117,6 +121,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
+    // hata durumunda log kaydı ve genel hata mesajı
     console.error('avatar yükleme hatası:', error);
     return NextResponse.json(
       { success: false, error: 'Sunucu hatası' },

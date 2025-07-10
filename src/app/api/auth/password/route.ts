@@ -4,12 +4,13 @@ import User from '@/lib/models/User';
 import { verifyToken } from '@/lib/jwt';
 import bcrypt from 'bcryptjs';
 
+// şifre değiştirme endpoint'i - mevcut şifre doğrulaması ile yeni şifre belirler
 export async function PUT(request: NextRequest) {
   try {
-    // veritabanına bağlan
+    // mongodb bağlantısını başlat
     await connectToDatabase();
 
-    // token'ı doğrula
+    // authorization header'dan jwt token'ı al ve doğrula
     const authHeader = request.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
@@ -18,6 +19,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
+    // bearer token'dan jwt'yi çıkar ve doğrula
     const token = authHeader.substring(7);
     const decoded = verifyToken(token);
     
@@ -28,11 +30,11 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // request body'yi al
+    // request body'den şifre bilgilerini al
     const body = await request.json();
     const { currentPassword, newPassword } = body;
 
-    // validasyon
+    // temel validasyon - mevcut ve yeni şifre kontrolü
     if (!currentPassword || !newPassword) {
       return NextResponse.json(
         { success: false, error: 'Mevcut şifre ve yeni şifre zorunludur' },
@@ -40,6 +42,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
+    // yeni şifre güvenlik kontrolü - minimum 6 karakter
     if (newPassword.length < 6) {
       return NextResponse.json(
         { success: false, error: 'Yeni şifre en az 6 karakter olmalıdır' },
@@ -47,7 +50,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // kullanıcıyı bul
+    // kullanıcıyı veritabanında bul - token'daki userId ile
     const user = await User.findById(decoded.userId);
     if (!user) {
       return NextResponse.json(
@@ -56,7 +59,7 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // mevcut şifreyi kontrol et
+    // mevcut şifre doğrulaması - bcrypt ile hash karşılaştırması
     const isCurrentPasswordValid = await bcrypt.compare(currentPassword, user.password);
     if (!isCurrentPasswordValid) {
       return NextResponse.json(
@@ -65,20 +68,22 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // yeni şifreyi hash'le
+    // yeni şifreyi güvenli şekilde hashle - bcrypt ile 12 salt round
     const saltRounds = 12;
     const hashedNewPassword = await bcrypt.hash(newPassword, saltRounds);
 
-    // şifreyi güncelle
+    // kullanıcının şifresini güncelle ve veritabanına kaydet
     user.password = hashedNewPassword;
     await user.save();
 
+    // başarılı şifre değiştirme yanıtı döndür
     return NextResponse.json({
       success: true,
       message: 'Şifre başarıyla değiştirildi'
     });
 
   } catch (error) {
+    // hata durumunda log kaydı ve genel hata mesajı
     console.error('şifre değiştirme hatası:', error);
     return NextResponse.json(
       { success: false, error: 'Sunucu hatası' },
