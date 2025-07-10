@@ -4,6 +4,8 @@ export interface IUser extends Document {
   name: string;
   email: string;
   password: string;
+  phone?: string;
+  avatar?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -25,6 +27,14 @@ const UserSchema = new Schema<IUser>({
     type: String,
     required: [true, 'şifre zorunludur'],
     minlength: [6, 'şifre en az 6 karakter olmalıdır']
+  },
+  phone: {
+    type: String,
+    trim: true
+  },
+  avatar: {
+    type: String,
+    trim: true
   }
 }, {
   timestamps: true

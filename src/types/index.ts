@@ -3,6 +3,8 @@ export interface User {
   _id: string;
   email: string;
   name: string;
+  phone?: string;
+  avatar?: string;
   createdAt: Date;
   updatedAt: Date;
 }
