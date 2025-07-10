@@ -6,9 +6,11 @@ import Link from 'next/link';
 import { RegisterForm } from '@/types';
 import { useAuth } from '@/providers/AuthProvider';
 
+// kayıt sayfası bileşeni - yeni kullanıcı oluşturma
 export default function RegisterPage() {
   const router = useRouter();
   const { user } = useAuth();
+  // form verilerini tutan state - ad, email, şifre ve şifre tekrarı
   const [formData, setFormData] = useState<RegisterForm>({
     name: '',
     email: '',
@@ -18,25 +20,27 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // eğer kullanıcı zaten giriş yapmışsa customers sayfasına yönlendir
+  // kullanıcı zaten giriş yapmışsa customers sayfasına yönlendir - otomatik yönlendirme
   useEffect(() => {
     if (user) {
       router.push('/customers');
     }
   }, [user, router]);
 
+  // form gönderimi - api'ye kayıt isteği gönderir
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
 
-    // şifre kontrolü yapacağız
+    // şifre eşleşme kontrolü - client side validation
     if (formData.password !== formData.confirmPassword) {
       setError('Şifreler eşleşmiyor');
       setLoading(false);
       return;
     }
 
+    // şifre uzunluk kontrolü - minimum 6 karakter
     if (formData.password.length < 6) {
       setError('Şifre en az 6 karakter olmalıdır');
       setLoading(false);
@@ -44,6 +48,7 @@ export default function RegisterPage() {
     }
 
     try {
+      // register api endpoint'ine post isteği gönder
       const response = await fetch('/api/auth/register', {
         method: 'POST',
         headers: {
@@ -59,7 +64,7 @@ export default function RegisterPage() {
       const data = await response.json();
 
       if (data.success) {
-        // tokenı localstoragea kaydet
+        // başarılı kayıt - token ve kullanıcı bilgilerini localStorage'a kaydet
         localStorage.setItem('token', data.data.token);
         localStorage.setItem('user', JSON.stringify(data.data.user));
         
@@ -75,6 +80,7 @@ export default function RegisterPage() {
     }
   };
 
+  // form input değişikliklerini yakala - controlled component
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
@@ -82,7 +88,7 @@ export default function RegisterPage() {
     });
   };
 
-  // eğer kullanıcı giriş yapmışsa loading göster
+  // kullanıcı giriş yapmışsa yönlendirme spinner'ı göster
   if (user) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -96,6 +102,7 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      {/* header bölümü - logo ve başlık */}
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
           <div className="mb-4">
@@ -113,15 +120,18 @@ export default function RegisterPage() {
         </div>
       </div>
 
+      {/* form bölümü - kayıt formu */}
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit}>
+            {/* hata mesajı gösterimi */}
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
                 {error}
               </div>
             )}
 
+            {/* ad soyad input alanı */}
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700">
                 Ad Soyad
@@ -141,6 +151,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
+            {/* email input alanı */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 E-posta adresi
@@ -160,6 +171,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
+            {/* şifre input alanı */}
             <div>
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Şifre
@@ -179,6 +191,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
+            {/* şifre tekrar input alanı */}
             <div>
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
                 Şifre Tekrar
@@ -198,6 +211,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
+            {/* kayıt butonu */}
             <div>
               <button
                 type="submit"
@@ -209,6 +223,7 @@ export default function RegisterPage() {
             </div>
           </form>
 
+          {/* giriş yapma bölümü */}
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -219,6 +234,7 @@ export default function RegisterPage() {
               </div>
             </div>
 
+            {/* giriş yap butonu */}
             <div className="mt-6">
               <Link
                 href="/login"

@@ -5,18 +5,23 @@ import Link from 'next/link';
 import { Customer } from '@/types';
 import { useAuth } from '@/providers/AuthProvider';
 
+// müşteriler sayfası ana bileşeni - müşteri listesi yönetimi
 export default function CustomersPage() {
+  // müşteri listesi state'i - api'den gelen veriler
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  // arama ve filtreleme state'leri
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const { user, logout } = useAuth();
 
+  // sayfa yüklendiğinde müşteri listesini getir
   useEffect(() => {
     fetchCustomers();
   }, []);
 
+  // müşteri listesini api'den çek - token ile kimlik doğrulama
   const fetchCustomers = async () => {
     try {
       const token = localStorage.getItem('token');
@@ -24,6 +29,7 @@ export default function CustomersPage() {
         return;
       }
 
+      // customers api endpoint'ine get isteği gönder
       const response = await fetch('/api/customers', {
         headers: {
           'Authorization': `Bearer ${token}`
@@ -43,6 +49,7 @@ export default function CustomersPage() {
     }
   };
 
+  // çıkış yap fonksiyonu - auth provider'dan
   const handleLogout = () => {
     logout();
   };
@@ -62,6 +69,7 @@ export default function CustomersPage() {
   );
 }
 
+// müşteriler içerik bileşeni - ui render ve filtreleme mantığı
 function CustomersContent({ 
   customers, 
   loading, 
@@ -84,18 +92,23 @@ function CustomersContent({
   handleLogout: () => void;
 }) {
 
+  // müşteri filtreleme - arama terimi ve etiketlere göre
   const filteredCustomers = customers.filter(customer => {
+    // arama terimi kontrolü - isim ve email'de ara
     const matchesSearch = customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          customer.email.toLowerCase().includes(searchTerm.toLowerCase());
     
+    // etiket filtreleme - seçili etiketlerden en az biri eşleşmeli
     const matchesTags = selectedTags.length === 0 || 
                        selectedTags.some(tag => customer.tags.includes(tag));
     
     return matchesSearch && matchesTags;
   });
 
+  // tüm benzersiz etiketleri topla - filtreleme için
   const allTags = Array.from(new Set(customers.flatMap(c => c.tags)));
 
+  // loading durumunda spinner göster
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -109,16 +122,19 @@ function CustomersContent({
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
+      {/* header bölümü - navigasyon ve kullanıcı bilgileri */}
       <header className="bg-white/90 backdrop-blur-sm shadow border-b border-blue-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 space-y-4 sm:space-y-0">
+            {/* logo ve marka adı */}
             <div className="flex items-center space-x-3">
               <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">Mini CRM</h1>
             </div>
+            {/* kullanıcı profili ve çıkış butonu */}
             <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
               {user && (
                 <Link href="/profile" className="flex items-center space-x-3 hover:bg-gray-50 p-2 rounded-md transition-colors">
+                  {/* profil avatar'ı */}
                   <div className="flex items-center justify-center w-8 h-8 bg-blue-100 rounded-full overflow-hidden">
                     {user.avatar ? (
                       <img
@@ -132,12 +148,14 @@ function CustomersContent({
                       </svg>
                     )}
                   </div>
+                  {/* kullanıcı bilgileri */}
                   <div className="text-sm">
                     <p className="text-gray-900 font-medium">{user.name || user.email}</p>
                     <p className="text-gray-500 text-xs">{user.email}</p>
                   </div>
                 </Link>
               )}
+              {/* çıkış yap butonu */}
               <button
                 onClick={handleLogout}
                 className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors w-full sm:w-auto"
@@ -150,10 +168,11 @@ function CustomersContent({
       </header>
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        {/* Page Header */}
+        {/* sayfa başlığı ve aksiyon butonları */}
         <div className="px-4 py-6 sm:px-0">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 space-y-4 sm:space-y-0">
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Müşteriler</h2>
+            {/* navigasyon butonları */}
             <div className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-3 w-full sm:w-auto">
               <Link
                 href="/notes"
@@ -170,8 +189,9 @@ function CustomersContent({
             </div>
           </div>
 
-          {/* Search and Filters */}
+          {/* arama ve filtreleme bölümü */}
           <div className="mb-6 space-y-4">
+            {/* arama input'u */}
             <div>
               <input
                 type="text"
@@ -182,6 +202,7 @@ function CustomersContent({
               />
             </div>
             
+            {/* etiket filtreleme */}
             {allTags.length > 0 && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -212,15 +233,16 @@ function CustomersContent({
             )}
           </div>
 
-          {/* Error Message */}
+          {/* hata mesajı gösterimi */}
           {error && (
             <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md mb-6">
               {error}
             </div>
           )}
 
-          {/* Customers List */}
+          {/* müşteri listesi */}
           {filteredCustomers.length === 0 ? (
+            // boş durum mesajları
             <div className="text-center py-12">
               <div className="text-gray-500">
                 {customers.length === 0 ? (
@@ -237,10 +259,12 @@ function CustomersContent({
               </div>
             </div>
           ) : (
+            // müşteri kartları grid'i
             <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {filteredCustomers.map((customer) => (
                 <div key={customer._id} className="bg-white overflow-hidden shadow rounded-lg">
                   <div className="px-4 py-5 sm:p-6">
+                    {/* müşteri başlığı ve düzenleme butonu */}
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-2 sm:space-y-0">
                       <h3 className="text-lg font-medium text-gray-900 truncate">
                         {customer.name}
@@ -255,6 +279,7 @@ function CustomersContent({
                       </div>
                     </div>
                     
+                    {/* müşteri iletişim bilgileri */}
                     <div className="space-y-2">
                       <div className="flex items-center text-sm text-gray-600">
                         <svg className="w-4 h-4 mr-2 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -271,6 +296,7 @@ function CustomersContent({
                       </div>
                     </div>
 
+                    {/* müşteri etiketleri */}
                     {customer.tags && customer.tags.length > 0 && (
                       <div className="mt-4">
                         <div className="flex flex-wrap gap-1">
