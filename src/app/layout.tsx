@@ -12,8 +12,8 @@ export const metadata: Metadata = {
   authors: [{ name: "Elif Cetin - Mini CRM Team" }],
   viewport: "width=device-width, initial-scale=1",
   icons: {
-    icon: '/minicrmlogo.png',
-    apple: '/minicrmlogo.png',
+    icon: '/logo.png',
+    apple: '/logo.png',
   },
 };
 

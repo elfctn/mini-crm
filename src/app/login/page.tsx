@@ -79,9 +79,8 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <div className="text-center">
-          <div className="flex items-center justify-center space-x-3 mb-4">
-            <img src="/minicrmlogo.png" alt="Mini CRM Logo" className="w-16 h-16" />
-            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">Mini CRM</h1>
+          <div className="mb-4">
+            <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">Mini CRM</h1>
           </div>
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
             Hesabınıza giriş yapın

@@ -159,8 +159,8 @@ export default function NotesPage() {
         <header className="bg-white/90 backdrop-blur-sm shadow border-b border-blue-100">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 sm:py-6 space-y-4 sm:space-y-0">
-              <div className="flex items-center space-x-3">
-                                  <img src="/minicrmlogo.png" alt="Mini CRM Logo" className="w-10 h-10" />
+                          <div className="flex items-center space-x-3">
+              <img src="/logo.png" alt="Mini CRM Logo" className="w-10 h-10" />
                 <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">Mini CRM</h1>
               </div>
               <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
@@ -193,7 +193,7 @@ export default function NotesPage() {
                 )}
                 <button
                   onClick={handleLogout}
-                  className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors w-full sm:w-auto"
+                  className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors w-full sm:w-auto"
                 >
                   Çıkış Yap
                 </button>
@@ -209,7 +209,7 @@ export default function NotesPage() {
               <h2 className="text-xl sm:text-2xl font-bold text-gray-900">Tüm Notlar</h2>
               <Link
                 href="/customers"
-                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors text-center w-full sm:w-auto"
+                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors text-center w-full sm:w-auto"
               >
                 Müşterilere Dön
               </Link>
@@ -294,7 +294,7 @@ export default function NotesPage() {
                           </button>
                           <button
                             onClick={() => updateNote(note._id)}
-                            className="px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
+                            className="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
                           >
                             Kaydet
                           </button>

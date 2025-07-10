@@ -242,7 +242,7 @@ export default function ProfilePage() {
             </div>
             <button
               onClick={handleLogout}
-              className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors w-full sm:w-auto"
+              className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors w-full sm:w-auto"
             >
               Çıkış Yap
             </button>
@@ -375,7 +375,7 @@ export default function ProfilePage() {
                   <button
                     type="submit"
                     disabled={saving}
-                    className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {saving ? 'Kaydediliyor...' : 'Değişiklikleri Kaydet'}
                   </button>
@@ -444,7 +444,7 @@ export default function ProfilePage() {
                   <button
                     type="submit"
                     disabled={changingPassword}
-                    className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    className="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-500 hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                   >
                     {changingPassword ? 'Değiştiriliyor...' : 'Şifreyi Değiştir'}
                   </button>

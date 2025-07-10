@@ -305,7 +305,7 @@ export default function EditCustomerPage({ params }: { params: { id: string } })
               </div>
               <button
                 onClick={handleDeleteCustomer}
-                className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors self-end sm:self-auto"
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors self-end sm:self-auto"
               >
                 Müşteriyi Sil
               </button>
