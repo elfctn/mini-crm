@@ -1,5 +1,9 @@
 # Mini CRM - Müşteri Takip Uygulaması
 
+## 🌐 Canlı Demo
+
+[mini-crm-elfctns-projects.vercel.app](https://mini-crm-elfctns-projects.vercel.app/)
+
 Küçük işletmeler için basit ve etkili müşteri takip sistemi. Next.js 14, MongoDB Atlas, Mongoose, JWT authentication, Cloudinary ve TailwindCSS ile geliştirilmiştir.
 
 ## 🚀 Özellikler
@@ -80,7 +84,13 @@ NODE_ENV=development
    - **API Secret**
 4. Bu bilgileri `.env.local` dosyasına ekleyin
 
-### 4. Geliştirme Sunucusunu Başlatın
+### 4. Veritabanını Başlatın
+
+```bash
+npm run seed
+```
+
+### 5. Geliştirme Sunucusunu Başlatın
 
 ```bash
 npm run dev
@@ -95,141 +105,37 @@ Uygulama ilk çalıştırıldığında otomatik olarak demo hesap oluşturulur:
 - **Email**: `admin@minicrm.com`
 - **Şifre**: `admin123`
 
-## 📱 Kullanım
-
-### Giriş Yapma
-1. `/login` sayfasına gidin
-2. Demo hesap bilgileriyle giriş yapın
-3. Başarılı girişten sonra müşteri listesine yönlendirilirsiniz
-
-### Profil Yönetimi
-- **Profil Bilgilerini Güncelleme**: Header'daki profil kartına tıklayın
-  - Ad, e-posta ve telefon bilgilerini güncelleyin
-  - "Değişiklikleri Kaydet" butonuna tıklayın
-- **Şifre Değiştirme**: Profil sayfasında şifre bölümünü kullanın
-  - Mevcut şifrenizi girin
-  - Yeni şifrenizi ve tekrarını girin
-  - "Şifreyi Değiştir" butonuna tıklayın
-- **Profil Fotoğrafı Yükleme**: Profil sayfasında avatar bölümünü kullanın
-  - "Fotoğraf Seç" butonuna tıklayın
-  - JPG, PNG veya GIF formatında dosya seçin (max 5MB)
-  - Fotoğraf otomatik olarak yüklenir ve tüm sayfalarda görünür
-
-### Müşteri Yönetimi
-- **Müşteri Ekleme**: "Yeni Müşteri" butonuna tıklayın
-- **Müşteri Düzenleme**: Müşteri kartındaki "Düzenle" butonuna tıklayın
-- **Müşteri Silme**: Müşteri detay sayfasındaki "Sil" butonuna tıklayın
-- **Arama**: Üst kısımdaki arama kutusunu kullanın
-- **Filtreleme**: Etiketlere göre filtreleme yapın
-
-### Not Yönetimi
-- **Not Ekleme**: Müşteri detay sayfasında not ekleyin
-- **Not Düzenleme**: Not üzerindeki "Düzenle" butonuna tıklayın
-- **Not Silme**: Not üzerindeki "Sil" butonuna tıklayın
-
-## 🌐 Canlı Ortam (Production) Kurulumu
-
-### Vercel ile Deploy
-
-1. **Vercel'e Bağlanın**
-   ```bash
-   npm install -g vercel
-   vercel login
-   ```
-
-2. **Environment Variables Ayarlayın**
-   - Vercel dashboard'da projenizi seçin
-   - Settings > Environment Variables bölümüne gidin
-   - Aşağıdaki değişkenleri ekleyin:
-     ```
-     JWT_SECRET=your-production-jwt-secret-key
-     MONGODB_URI=your-mongodb-atlas-connection-string
-     CLOUDINARY_CLOUD_NAME=your-cloud-name
-     CLOUDINARY_API_KEY=your-api-key
-     CLOUDINARY_API_SECRET=your-api-secret
-     NODE_ENV=production
-     ```
-
-3. **Deploy Edin**
-   ```bash
-   vercel --prod
-   ```
+Bu hesap ile sistemi test edebilirsiniz.
 
 ## 🧪 Test
 
-### Backend Testleri (Jest)
-
-Proje kapsamlı backend testleri içerir. Testleri çalıştırmak için:
+### Test Çalıştırma
 
 ```bash
-# tüm testleri çalıştır
 npm test
-
-# testleri watch modunda çalıştır
-npm run test:watch
-
-# test coverage raporu
-npm run test:coverage
 ```
 
-#### Test Dosyaları
+### Test Kategorileri
 
-- **`src/__tests__/auth.test.ts`** - Authentication endpoint testleri
-  - kullanıcı kaydı testleri
-  - kullanıcı girişi testleri
-  - jwt token doğrulama testleri
-  - hata durumları testleri
+- **`src/__tests__/auth.test.ts`** - Kimlik doğrulama testleri
+  - Kullanıcı kayıt işlemleri
+  - Giriş işlemleri
+  - JWT token doğrulama
+  - Şifre hashleme testleri
 
 - **`src/__tests__/customers.test.ts`** - Müşteri CRUD testleri
-  - müşteri ekleme testleri
-  - müşteri listeleme testleri
-  - müşteri güncelleme testleri
-  - müşteri silme testleri
-  - arama ve filtreleme testleri
+  - Müşteri ekleme işlemleri
+  - Müşteri güncelleme işlemleri
+  - Müşteri silme işlemleri
+  - Müşteri listeleme işlemleri
+  - Arama ve filtreleme testleri
 
 - **`src/__tests__/notes.test.ts`** - Not CRUD testleri
-  - not ekleme testleri
-  - not listeleme testleri
-  - not güncelleme testleri
-  - not silme testleri
-  - müşteri bazlı not testleri
-
-- **`src/__tests__/profile.test.ts`** - Profil yönetimi testleri
-  - profil bilgileri güncelleme testleri
-  - şifre değiştirme testleri
-  - avatar yükleme testleri
-  - hata durumları testleri
-
-#### Test Özellikleri
-
-- **İzole Testler**: Her test MongoDB Memory Server kullanarak izole ortamda çalışır
-- **Açıklamalı Testler**: Her test açıklayıcı yorumlarla başlar
-- **Kapsamlı Kapsam**: Tüm API endpointleri ve hata durumları test edilir
-- **Otomatik Temizlik**: Her test sonrası veritabanı otomatik temizlenir
-
-#### Test Çalıştırma Örneği
-
-```bash
-# tüm testleri çalıştır
-npm test
-
-# Çıktı örneği:
-# PASS  src/__tests__/auth.test.ts
-# PASS  src/__tests__/customers.test.ts
-# PASS  src/__tests__/notes.test.ts
-# PASS  src/__tests__/components.test.tsx
-# 
-# Test Suites: 4 passed, 4 total
-# Tests:       16 passed, 16 total
-# Snapshots:   0 total
-# Time:        6.721 s
-```
-
-### Frontend Testleri (React Testing Library)
-
-Proje React bileşenleri için de testler içerir:
-
-#### Test Dosyaları
+  - Not ekleme işlemleri
+  - Not güncelleme işlemleri
+  - Not silme işlemleri
+  - Müşteri bazlı not listeleme
+  - Tüm notları listeleme
 
 - **`src/__tests__/components.test.tsx`** - React bileşen testleri
   - AuthProvider render testleri
@@ -237,40 +143,6 @@ Proje React bileşenleri için de testler içerir:
   - Next.js router mock testleri
 
 ## 📄 Dokümantasyon
-
-### Proje Özeti PDF'i
-
-Proje geliştirme sürecini, teknoloji seçimlerini ve öğrenilen dersleri içeren kapsamlı bir PDF dokümantasyonu oluşturabilirsiniz:
-
-```bash
-# PDF oluştur
-npm run pdf
-```
-
-Bu komut `PROJE_OZETI.md` dosyasını okuyarak `Mini_CRM_Proje_Ozeti.pdf` dosyasını oluşturur.
-
-#### PDF İçeriği
-- Proje özeti ve temel özellikler
-- Teknoloji seçimleri ve nedenleri
-- Proje yapısı ve mimari
-- Güvenlik önlemleri
-- Geliştirme süreci adımları
-- Test stratejisi
-- Gelecek planları
-- Öğrenilen dersler
-
-#### PDF Güncelleme
-PDF'i güncellemek için:
-1. `PROJE_OZETI.md` dosyasını düzenleyin
-2. `npm run pdf` komutunu çalıştırın
-3. Yeni PDF otomatik olarak oluşturulur
-
-#### Frontend Test Özellikleri
-
-- **React Testing Library**: Kullanıcı davranışlarını simüle eder
-- **Jest DOM**: DOM matchers (toBeInTheDocument, toHaveClass vb.)
-- **Next.js Router Mock**: useRouter ve usePathname fonksiyonları mocklanır
-- **JSX/TSX Desteği**: TypeScript React bileşenleri test edilir
 
 ### API Testleri (Postman)
 
@@ -347,55 +219,34 @@ mini-crm/
 │       ├── notes.test.ts  # Note CRUD testleri
 │       └── components.test.tsx # React bileşen testleri
 ├── public/                # Static assets
-├── jest.config.js         # Jest yapılandırması
-├── MiniCRM.postman_collection.json # Postman collection
-└── README.md
+├── .env.example           # Environment variables template
+├── jest.config.js         # Jest configuration
+├── next.config.js         # Next.js configuration
+├── package.json           # Dependencies and scripts
+├── README.md              # Project documentation
+├── tailwind.config.js     # TailwindCSS configuration
+└── tsconfig.json          # TypeScript configuration
 ```
 
-## 🔧 Geliştirme
+## 🚀 Deployment
 
-### Yeni Özellik Ekleme
+### Vercel (Önerilen)
 
-1. **API Route Oluşturma**
-   ```typescript
-   // src/app/api/feature/route.ts
-   export async function GET(request: NextRequest) {
-     // ... implementation
-   }
-   ```
+1. [Vercel](https://vercel.com) hesabı oluşturun
+2. GitHub repository'nizi bağlayın
+3. Environment variables'ları ayarlayın:
+   - `JWT_SECRET`
+   - `MONGODB_URI`
+   - `CLOUDINARY_CLOUD_NAME`
+   - `CLOUDINARY_API_KEY`
+   - `CLOUDINARY_API_SECRET`
+4. Deploy edin!
 
-2. **Frontend Sayfası Oluşturma**
-   ```typescript
-   // src/app/feature/page.tsx
-   'use client';
-   import { useAuth } from '@/providers/AuthProvider';
-   // ... implementation
-   ```
+### Diğer Platformlar
 
-## 🐛 Sorun Giderme
-
-### Yaygın Sorunlar
-
-1. **"Database connection failed" Hatası**
-   - MONGODB_URI environment variable'ını kontrol edin
-   - MongoDB Atlas bağlantı izinlerini kontrol edin
-
-2. **"Authentication failed" Hatası**
-   - JWT_SECRET environment variable'ını kontrol edin
-   - Token'ın geçerliliğini kontrol edin
-
-3. **"Cannot read property of null" Hatası**
-   - localStorage erişimini kontrol edin
-   - Client-side rendering sorunlarını kontrol edin
-
-### Debug Modu
-
-Geliştirme sırasında console loglarını aktif tutun:
-- API route'larda detaylı logging
-- AuthProvider'da token kontrol logları
-- Database işlemlerinde debug bilgileri
-
-
+- **Netlify**: Static export ile
+- **Railway**: Full-stack deployment
+- **Heroku**: Container deployment
 
 ## 🤝 Katkıda Bulunma
 
@@ -405,13 +256,11 @@ Geliştirme sırasında console loglarını aktif tutun:
 4. Push yapın (`git push origin feature/amazing-feature`)
 5. Pull Request oluşturun
 
-## 📞 İletişim
+## 👨‍💻 Geliştirici
 
-Proje ile ilgili sorularınız için:
-- GitHub Issues kullanın
-- Email: [elifcetin.dev@gmail.com]
+**Elif Çetin** - [@elfctn](https://github.com/elfctn)
 
 ---
 
-**Not**: Bu proje görev-case amaçlı geliştirilmiştir. Production kullanımı için güvenlik önlemlerini artırmanız önerilir.
+**Not**: Bu proje eğitim amaçlı geliştirilmiştir. Production kullanımı için güvenlik önlemlerini artırmanız önerilir.
 
