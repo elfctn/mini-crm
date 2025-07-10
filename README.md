@@ -1,10 +1,12 @@
 # Mini CRM - Müşteri Takip Uygulaması
 
-Küçük işletmeler için basit ve etkili müşteri takip sistemi. Next.js 14, MongoDB Atlas, Mongoose, JWT authentication ve TailwindCSS ile geliştirilmiştir.
+Küçük işletmeler için basit ve etkili müşteri takip sistemi. Next.js 14, MongoDB Atlas, Mongoose, JWT authentication, Cloudinary ve TailwindCSS ile geliştirilmiştir.
 
 ## 🚀 Özellikler
 
 - **Kullanıcı Yönetimi**: JWT tabanlı güvenli authentication
+- **Profil Yönetimi**: Kullanıcı bilgilerini güncelleme ve şifre değiştirme
+- **Profil Fotoğrafı**: Cloudinary ile avatar yükleme ve yönetimi
 - **Müşteri Yönetimi**: Tam CRUD operasyonları (Ekleme, Okuma, Güncelleme, Silme)
 - **Not Sistemi**: Müşteriler için not ekleme ve yönetimi
 - **Arama ve Filtreleme**: Müşteri arama ve etiket bazlı filtreleme
@@ -19,6 +21,7 @@ Küçük işletmeler için basit ve etkili müşteri takip sistemi. Next.js 14, 
 - **Veritabanı**: MongoDB Atlas, Mongoose
 - **Authentication**: JWT (JSON Web Tokens)
 - **Password Hashing**: bcryptjs
+- **File Upload**: Cloudinary
 - **Deployment**: Vercel (önerilen)
 
 ## 📋 Gereksinimler
@@ -55,15 +58,27 @@ cp env.example .env.local
 # jwt secret - canlı ortamda mutlaka değiştirin!
 JWT_SECRET=your-super-secret-jwt-key-here-change-this-in-production
 
-# nextauth secret (opsiyonel)
-NEXTAUTH_SECRET=your-nextauth-secret-key
-
 # mongodb atlas connection string
 MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/mini-crm?retryWrites=true&w=majority
 
-# canlı ortam ayarları
-NODE_ENV=production
+# cloudinary configuration
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
+
+# development settings
+NODE_ENV=development
 ```
+
+#### Cloudinary Hesabı Oluşturma
+
+1. [cloudinary.com](https://cloudinary.com) adresine gidin
+2. Ücretsiz hesap oluşturun
+3. Dashboard'dan bilgileri alın:
+   - **Cloud Name**
+   - **API Key**
+   - **API Secret**
+4. Bu bilgileri `.env.local` dosyasına ekleyin
 
 ### 4. Geliştirme Sunucusunu Başlatın
 
@@ -86,6 +101,19 @@ Uygulama ilk çalıştırıldığında otomatik olarak demo hesap oluşturulur:
 1. `/login` sayfasına gidin
 2. Demo hesap bilgileriyle giriş yapın
 3. Başarılı girişten sonra müşteri listesine yönlendirilirsiniz
+
+### Profil Yönetimi
+- **Profil Bilgilerini Güncelleme**: Header'daki profil kartına tıklayın
+  - Ad, e-posta ve telefon bilgilerini güncelleyin
+  - "Değişiklikleri Kaydet" butonuna tıklayın
+- **Şifre Değiştirme**: Profil sayfasında şifre bölümünü kullanın
+  - Mevcut şifrenizi girin
+  - Yeni şifrenizi ve tekrarını girin
+  - "Şifreyi Değiştir" butonuna tıklayın
+- **Profil Fotoğrafı Yükleme**: Profil sayfasında avatar bölümünü kullanın
+  - "Fotoğraf Seç" butonuna tıklayın
+  - JPG, PNG veya GIF formatında dosya seçin (max 5MB)
+  - Fotoğraf otomatik olarak yüklenir ve tüm sayfalarda görünür
 
 ### Müşteri Yönetimi
 - **Müşteri Ekleme**: "Yeni Müşteri" butonuna tıklayın
@@ -116,6 +144,9 @@ Uygulama ilk çalıştırıldığında otomatik olarak demo hesap oluşturulur:
      ```
      JWT_SECRET=your-production-jwt-secret-key
      MONGODB_URI=your-mongodb-atlas-connection-string
+     CLOUDINARY_CLOUD_NAME=your-cloud-name
+     CLOUDINARY_API_KEY=your-api-key
+     CLOUDINARY_API_SECRET=your-api-secret
      NODE_ENV=production
      ```
 
@@ -162,6 +193,12 @@ npm run test:coverage
   - not güncelleme testleri
   - not silme testleri
   - müşteri bazlı not testleri
+
+- **`src/__tests__/profile.test.ts`** - Profil yönetimi testleri
+  - profil bilgileri güncelleme testleri
+  - şifre değiştirme testleri
+  - avatar yükleme testleri
+  - hata durumları testleri
 
 #### Test Özellikleri
 
