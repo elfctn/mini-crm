@@ -1,5 +1,4 @@
 module.exports = {
-  preset: 'ts-jest',
   testMatch: ['**/__tests__/**/*.test.ts', '**/__tests__/**/*.test.tsx'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json'],
   setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],
@@ -7,9 +6,7 @@ module.exports = {
     '^@/(.*)$': '<rootDir>/src/$1',
   },
   transform: {
-    '^.+\\.(ts|tsx)$': ['ts-jest', {
-      tsconfig: 'tsconfig.json',
-    }],
+    '^.+\\.(ts|tsx)$': '@swc/jest',
   },
   testEnvironmentOptions: {
     customExportConditions: [''],
@@ -24,9 +21,7 @@ module.exports = {
       },
       setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],
       transform: {
-        '^.+\\.(ts|tsx)$': ['ts-jest', {
-          tsconfig: 'tsconfig.json',
-        }],
+        '^.+\\.(ts|tsx)$': '@swc/jest',
       },
     },
     {
@@ -38,9 +33,7 @@ module.exports = {
       },
       setupFilesAfterEnv: ['<rootDir>/src/__tests__/setup.ts'],
       transform: {
-        '^.+\\.(ts|tsx)$': ['ts-jest', {
-          tsconfig: 'tsconfig.json',
-        }],
+        '^.+\\.(ts|tsx)$': '@swc/jest',
       },
     },
   ],
